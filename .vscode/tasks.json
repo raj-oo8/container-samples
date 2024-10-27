@@ -23,12 +23,6 @@
 			],
 			"problemMatcher": "$msCompile",
 			"isBackground": true
-		},
-		{
-			"type": "Live Preview",
-			"workspacePath": "c:\\Users\\rajo\\Code\\container-samples",
-			"problemMatcher": [],
-			"label": "Live Preview: Run Server"
 		}
 	]
 }
