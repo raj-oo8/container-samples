@@ -1,0 +1,4 @@
+{
+    "dotnet.defaultSolution": "Aspire.sln",
+    "rust-analyzer.checkOnSave": true
+}
