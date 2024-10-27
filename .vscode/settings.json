@@ -1,4 +1,6 @@
 {
     "dotnet.defaultSolution": "Aspire.sln",
-    "rust-analyzer.checkOnSave": true
+    "yaml.schemas": {
+        "https://raw.githubusercontent.com/Azure/azure-resource-manager-schemas/master/schemas/2019-04-01/deploymentTemplate.json": "azure.yaml"
+    }
 }

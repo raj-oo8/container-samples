@@ -1,0 +1,36 @@
+name: Deploy to Azure Container Apps
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Install Azure Developer CLI
+      run: curl -fsSL https://aka.ms/install-azd.sh | bash
+
+    - name: Login to Azure
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Initialize Azure Developer CLI
+      run: azd init --template .
+
+    - name: Provision Azure Resources
+      run: azd provision --environment ${{ secrets.AZURE_ENVIRONMENT }} --no-prompt
+
+    - name: Deploy to Azure Container Apps
+      run: azd deploy --environment ${{ secrets.AZURE_ENVIRONMENT }} --no-prompt
