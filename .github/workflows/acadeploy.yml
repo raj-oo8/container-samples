@@ -37,8 +37,11 @@ jobs:
             --client-id "$($info.clientId)" `
             --client-secret "$($info.clientSecret)" `
             --tenant-id "$($info.tenantId)"
-          az account set --subscription "${{ env.AZURE_SUBSCRIPTION_ID }}"
         shell: pwsh
+
+      - name: Set Subscription ID
+        working-directory: ./src/Aspire/Aspire.AppHost
+        run: azd config set defaults.subscription ${{ env.AZURE_SUBSCRIPTION_ID }}
 
       - name: Provision Infrastructure
         working-directory: ./src/Aspire/Aspire.AppHost
