@@ -3,10 +3,7 @@
 name: aspire
 services:
   api:
-    project: ../Aspire.ApiService
+    project: ../Aspire.AppHost
     language: dotnet
     host: containerapp
-  web:
-    project: ../Aspire.Web
-    language: dotnet
-    host: containerapp
+
