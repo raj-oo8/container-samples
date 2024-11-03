@@ -1,10 +1,7 @@
-name: Deploy to Azure Container Apps
+name: Deploy .NET Aspire to Azure Container Apps
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 permissions:
   id-token: write
@@ -40,7 +37,7 @@ jobs:
             --tenant-id "$($info.tenantId)"
         shell: pwsh
 
-      - name: Set Subscription ID
+      - name: Set Subscription ID and Location
         working-directory: ./src/Aspire/Aspire.AppHost
         run: |
           azd config set defaults.subscription ${{ env.AZURE_SUBSCRIPTION_ID }}
