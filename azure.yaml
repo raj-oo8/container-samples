@@ -4,7 +4,7 @@
 # Note: Replace the URL with the correct schema URL if available
 # As of now, there is no official schema URL for azure.yaml, but you can use a placeholder or custom schema if needed
 
-name: AspireApp
+name: aspire
 services:
   api:
     project: src/Aspire/Aspire.ApiService

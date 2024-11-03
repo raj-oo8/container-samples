@@ -30,7 +30,7 @@ jobs:
       run: azd init --template .
 
     - name: Provision Azure Resources
-      run: azd provision --environment ${{ secrets.AZURE_ENVIRONMENT }} --no-prompt
+      run: azd provision --environment ${{ vars.AZURE_ENVIRONMENT }} --no-prompt
 
     - name: Deploy to Azure Container Apps
-      run: azd deploy --environment ${{ secrets.AZURE_ENVIRONMENT }} --no-prompt
+      run: azd deploy --environment ${{ vars.AZURE_ENVIRONMENT }} --no-prompt
