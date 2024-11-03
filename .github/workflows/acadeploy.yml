@@ -27,7 +27,7 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Initialize Azure Developer CLI
-      run: azd init --template .
+      run: azd init --template . --force
 
     - name: Provision Azure Resources
       run: azd provision --environment ${{ vars.AZURE_ENVIRONMENT }} --no-prompt
