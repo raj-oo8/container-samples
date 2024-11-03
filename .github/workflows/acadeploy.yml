@@ -17,6 +17,7 @@ jobs:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+      AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -41,7 +42,9 @@ jobs:
 
       - name: Set Subscription ID
         working-directory: ./src/Aspire/Aspire.AppHost
-        run: azd config set defaults.subscription ${{ env.AZURE_SUBSCRIPTION_ID }}
+        run: |
+          azd config set defaults.subscription ${{ env.AZURE_SUBSCRIPTION_ID }}
+          azd config set defaults.location ${{ env.AZURE_LOCATION }}
 
       - name: Provision Infrastructure
         working-directory: ./src/Aspire/Aspire.AppHost
