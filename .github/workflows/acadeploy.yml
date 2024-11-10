@@ -1,4 +1,4 @@
-name: Deploy .NET Aspire to Azure Container Apps
+name: Deploy Aspire to ACA
 
 on:
   workflow_dispatch:
