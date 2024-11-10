@@ -1,16 +1,18 @@
 {
   "projectPath": ".",
-  "inputPath": "aspirate-output",
   "allowClearNamespace": true,
   "namespace": "aspire",
   "containerImageTags": [
     "latest"
   ],
+  "imagePullPolicy": "IfNotPresent",
   "containerBuilder": "docker",
+  "containerRepositoryPrefix": "aspire",
   "kubeContext": "docker-desktop",
-  "outputFormat": "docker",
+  "outputFormat": "kustomize",
   "disableSecrets": true,
   "privateRegistryEmail": "aspir8@aka.ms",
+  "includeDashboard": true,
   "useCustomNamespace": true,
   "processAllComponents": true,
   "isRunning": true
