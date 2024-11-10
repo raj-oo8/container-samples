@@ -1,54 +1,52 @@
 name: Deploy Aspire to AKS
 
 on:
-    workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
-  build:
+  build-and-deploy:
+    name: Build and Deploy
     runs-on: ubuntu-latest
     env:
-        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-        AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
-        AZURE_KUBERNETES_CLUSTER: ${{ vars.AZURE_KUBERNETES_CLUSTER }}
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+      AZURE_KUBERNETES_CLUSTER: ${{ vars.AZURE_KUBERNETES_CLUSTER }}
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Install Azure CLI
-      run: |
-        curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+      - name: Install Azure CLI
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
-    - name: Install kubectl
-      run: |
-        sudo az aks install-cli
+      - name: Install kubectl
+        run: |
+          sudo az aks install-cli
 
-    - name: Install azd
-      uses: Azure/setup-azd@v1.0.0
+      - name: Install azd
+        uses: Azure/setup-azd@v1.0.0
 
-    - name: Install .NET Aspire workload
-      run: dotnet workload install aspire
+      - name: Install .NET Aspire workload
+        run: dotnet workload install aspire
 
-    - name: Log in with Azure (Client Credentials)
-      if: ${{ env.AZURE_CREDENTIALS != '' }}
-      run: |
-        $info = $Env:AZURE_CREDENTIALS | ConvertFrom-Json -AsHashtable;
-        Write-Host "::add-mask::$($info.clientSecret)"
+      - name: Log in with Azure (Client Credentials)
+        if: ${{ env.AZURE_CREDENTIALS != '' }}
+        run: |
+          $info = $Env:AZURE_CREDENTIALS | ConvertFrom-Json -AsHashtable;
+          Write-Host "::add-mask::$($info.clientSecret)"
 
-        azd auth login `
-          --client-id "$($info.clientId)" `
-          --client-secret "$($info.clientSecret)" `
-          --tenant-id "$($info.tenantId)"
-      shell: pwsh
-      
-    - name: Create AKS cluster
-      run: |
-        az aks create --resource-group rg-${{ env.AZURE_ENV_NAME }} --name ${{ env.AZURE_KUBERNETES_CLUSTER }} --node-count 1 --enable-addons monitoring --generate-ssh-keys
+          az login --service-principal -u "$($info.clientId)" -p "$($info.clientSecret)" --tenant "$($info.tenantId)"
+        shell: pwsh
 
-    - name: Get AKS credentials
-      run: |
-        az aks get-credentials --resource-group rg-${{ env.AZURE_ENV_NAME }} --name ${{ env.AZURE_KUBERNETES_CLUSTER }}
+      - name: Create AKS cluster
+        run: |
+          az aks create --resource-group rg-${{ env.AZURE_ENV_NAME }} --name ${{ env.AZURE_KUBERNETES_CLUSTER }} --node-count 1 --enable-addons monitoring --generate-ssh-keys
 
-    - name: Deploy to AKS
-      run: |
-        kubectl apply -f ../../src/Aspire/Aspire.AppHost/aspirate-output/
+      - name: Get AKS credentials
+        run: |
+          az aks get-credentials --resource-group rg-${{ env.AZURE_ENV_NAME }} --name ${{ env.AZURE_KUBERNETES_CLUSTER }}
+
+      - name: Deploy to AKS
+        run: |
+          kubectl apply -f ../../src/Aspire/Aspire.AppHost/aspirate-output/
