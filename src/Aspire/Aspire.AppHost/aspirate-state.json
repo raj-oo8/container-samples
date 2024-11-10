@@ -1,0 +1,23 @@
+{
+  "projectPath": ".",
+  "inputPath": "aspirate-output",
+  "outputPath": "aspirate-output",
+  "namespace": "aspire",
+  "containerImageTags": [
+    "latest"
+  ],
+  "containerBuilder": "docker",
+  "containerRepositoryPrefix": "aspire",
+  "kubeContext": "docker-desktop",
+  "outputFormat": "compose",
+  "privateRegistryEmail": "aspir8@aka.ms",
+  "includeDashboard": true,
+  "useCustomNamespace": true,
+  "secrets": {
+    "salt": "95H7OqF\u002BdX5iLZ5N",
+    "hash": "YwJ2OpZ\u002B5HtlOpzQ5yEW5wPQQe/qqfb1y2DxtehupPQ=",
+    "secrets": {}
+  },
+  "processAllComponents": true,
+  "isRunning": true
+}
