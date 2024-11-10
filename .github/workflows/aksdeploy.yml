@@ -1,4 +1,4 @@
-name: Deploy to AKS
+name: Deploy Aspire to AKS
 
 on:
     workflow_dispatch:
