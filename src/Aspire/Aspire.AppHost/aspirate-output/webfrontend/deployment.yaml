@@ -34,6 +34,11 @@ spec:
           limits:
             cpu: "1000m"
             memory: "512Mi"
+        env:
+        - name: APISERVICE_HOST
+          value: "apiservice"
+        - name: APISERVICE_PORT
+          value: "8080"
         envFrom:
         - configMapRef:
             name: webfrontend-env
