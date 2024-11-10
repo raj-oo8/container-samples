@@ -46,4 +46,4 @@ jobs:
 
       - name: Deploy to AKS
         run: |
-          kubectl apply -f src/Aspire/Aspire.AppHost/aspirate-output/
+          kubectl apply -k src/Aspire/Aspire.AppHost/aspirate-output/
