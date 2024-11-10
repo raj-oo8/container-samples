@@ -1,4 +1,4 @@
-name: Deploy Aspire to AKS
+name: Deploy to AKS
 
 on:
     workflow_dispatch:
@@ -13,10 +13,15 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
-    - name: Set up Azure CLI
-      uses: azure/CLI@v1
+    - name: Install Azure CLI
+      run: |
+        curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+    - name: Install kubectl
+      run: |
+        sudo az aks install-cli
 
     - name: Install azd
       uses: Azure/setup-azd@v1.0.0
@@ -38,7 +43,7 @@ jobs:
       
     - name: Create AKS cluster
       run: |
-        az aks create --resource-group rg-${{ env.AZURE_ENV_NAME }} --name ${{ env.AZURE_KUBERNETES_CLUSTER }}  --node-count 1 --enable-addons monitoring --generate-ssh-keys
+        az aks create --resource-group rg-${{ env.AZURE_ENV_NAME }} --name ${{ env.AZURE_KUBERNETES_CLUSTER }} --node-count 1 --enable-addons monitoring --generate-ssh-keys
 
     - name: Get AKS credentials
       run: |
