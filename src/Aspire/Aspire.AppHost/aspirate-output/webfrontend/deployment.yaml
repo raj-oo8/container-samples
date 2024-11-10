@@ -6,33 +6,33 @@ metadata:
   labels:
     app: webfrontend
 spec:
-  minReadySeconds: 60
   replicas: 1
   selector:
     matchLabels:
       app: webfrontend
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:
         app: webfrontend
     spec:
       containers:
-      - name: webfrontend
-        image: aspire/webfrontend:latest
-        imagePullPolicy: IfNotPresent
-        ports:
-        - name: http
-          containerPort: 8080
-        - name: https
-          containerPort: 8443
-        env:
-        - name: APISERVICE_HOST
-          value: "apiservice"
-        - name: APISERVICE_PORT
-          value: "8080"
-        envFrom:
-        - configMapRef:
-            name: webfrontend-env
-      terminationGracePeriodSeconds: 180
+        - name: webfrontend
+          image: aspire/webfrontend:latest
+          ports:
+          - containerPort: 8080
+          - containerPort: 8443
+          env:
+          - name: APISERVICE_HOST
+            value: "apiservice"
+          - name: APISERVICE_PORT
+            value: "8080"
+          envFrom:
+          - configMapRef:
+              name: webfrontend-env
+          resources:
+            requests:
+              memory: "256Mi"  # 256 Mebibytes of memory
+              cpu: "250m"      # 0.25 CPU
+            limits:
+              memory: "512Mi"  # 512 Mebibytes of memory
+              cpu: "500m"      # 0.5 CPU

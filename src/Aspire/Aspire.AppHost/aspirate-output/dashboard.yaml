@@ -26,6 +26,13 @@ spec:
           env:
             - name: DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS
               value: "true"
+          resources:
+            requests:
+              memory: "256Mi"  # 256 Mebibytes of memory
+              cpu: "250m"      # 0.25 CPU
+            limits:
+              memory: "512Mi"  # 512 Mebibytes of memory
+              cpu: "500m"      # 0.5 CPU
 ---
 apiVersion: v1
 kind: Service

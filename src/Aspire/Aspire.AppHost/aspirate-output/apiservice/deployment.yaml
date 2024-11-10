@@ -6,13 +6,10 @@ metadata:
   labels:
     app: apiservice
 spec:
-  minReadySeconds: 60
   replicas: 1
   selector:
     matchLabels:
       app: apiservice
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:
@@ -21,13 +18,16 @@ spec:
       containers:
       - name: apiservice
         image: aspire/apiservice:latest
-        imagePullPolicy: IfNotPresent
         ports:
-        - name: http
-          containerPort: 8080
-        - name: https
-          containerPort: 8443
+        - containerPort: 8080
+        - containerPort: 8443
         envFrom:
         - configMapRef:
             name: apiservice-env
-      terminationGracePeriodSeconds: 180
+        resources:
+          requests:
+            memory: "256Mi"  # 256 Mebibytes of memory
+            cpu: "250m"      # 0.25 CPU
+          limits:
+            memory: "512Mi"  # 512 Mebibytes of memory
+            cpu: "500m"      # 0.5 CPU
