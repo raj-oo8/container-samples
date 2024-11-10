@@ -44,22 +44,6 @@ jobs:
         run: |
           az aks get-credentials --resource-group rg-${{ env.AZURE_ENV_NAME }} --name ${{ env.AZURE_KUBERNETES_CLUSTER }}
 
-      - name: List current directory
-        run: |
-          ls -al
-
-      - name: List src directory
-        run: |
-          ls -al ../../src
-
-      - name: List Aspire directory
-        run: |
-          ls -al ../../src/Aspire
-
-      - name: List Aspire.AppHost directory
-        run: |
-          ls -al ../../src/Aspire/Aspire.AppHost
-
       - name: Deploy to AKS
         run: |
-          kubectl apply -f ../../src/Aspire/Aspire.AppHost/aspirate-output/
+          kubectl apply -f src/Aspire/Aspire.AppHost/aspirate-output/
