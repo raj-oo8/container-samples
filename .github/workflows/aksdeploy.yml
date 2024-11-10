@@ -11,6 +11,7 @@ jobs:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
       AZURE_KUBERNETES_CLUSTER: ${{ vars.AZURE_KUBERNETES_CLUSTER }}
+      AZURE_TIER: ${{ vars.AZURE_TIER }}
 
     steps:
       - name: Checkout code
@@ -33,9 +34,11 @@ jobs:
           az login --service-principal -u "$($info.clientId)" -p "$($info.clientSecret)" --tenant "$($info.tenantId)"
         shell: pwsh
 
-      - name: Create AKS cluster
+      - name: Check and create AKS cluster if not exists
         run: |
-          az aks create --resource-group rg-${{ env.AZURE_ENV_NAME }} --name ${{ env.AZURE_KUBERNETES_CLUSTER }} --node-count 1 --enable-addons monitoring --generate-ssh-keys
+          if ! az aks show --resource-group rg-${{ env.AZURE_ENV_NAME }} --name ${{ env.AZURE_KUBERNETES_CLUSTER }}; then
+            az aks create --resource-group rg-${{ env.AZURE_ENV_NAME }} --name ${{ env.AZURE_KUBERNETES_CLUSTER }} --tier ${{ env.AZURE_TIER }} --node-count 1 --enable-addons monitoring --generate-ssh-keys
+          fi
 
       - name: Get AKS credentials
         run: |
@@ -43,4 +46,4 @@ jobs:
 
       - name: Deploy to AKS
         run: |
-          kubectl apply -f ../../src/Aspire/Aspire.AppHost/aspirate-output/
+          kubectl apply -f ../src/Aspire/Aspire.AppHost/aspirate-output/
