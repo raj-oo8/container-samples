@@ -17,6 +17,7 @@ namespace AspNet.GrpcApis
 
             // Add services to the container.
             builder.Services.AddGrpc().AddJsonTranscoding();
+            builder.Services.AddGrpcSwagger();
             builder.Services.AddOpenApi();
             builder.Services.AddGrpcReflection();
 

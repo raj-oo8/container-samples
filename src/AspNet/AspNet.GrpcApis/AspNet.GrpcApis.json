@@ -23,12 +23,40 @@
           }
         }
       }
+    },
+    "/weather/v1/GetWeatherForecast": {
+      "get": {
+        "tags": [
+          "WeatherService"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": { },
   "tags": [
     {
       "name": "AspNet.GrpcApis"
+    },
+    {
+      "name": "WeatherService"
     }
   ]
 }
