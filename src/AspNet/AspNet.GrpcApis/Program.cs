@@ -1,22 +1,23 @@
 using AspNet.GrpcApis.Services;
-using Microsoft.OpenApi.Models;
 
 namespace AspNet.GrpcApis
 {
+    /// <summary>
+    /// The main program class for the gRPC service application.
+    /// </summary>
     public class Program
     {
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        /// <param name="args">An array of command-line argument strings.</param>
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
             builder.Services.AddGrpc().AddJsonTranscoding();
-            builder.Services.AddGrpcSwagger();
-            builder.Services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1",
-                    new OpenApiInfo { Title = "gRPC transcoding", Version = "v1" });
-            });
+            builder.Services.AddOpenApi();
             builder.Services.AddGrpcReflection();
 
             builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder =>
@@ -29,11 +30,15 @@ namespace AspNet.GrpcApis
 
             var app = builder.Build();
 
+            if (app.Environment.IsDevelopment())
+            {
+                app.MapOpenApi();
+            }
+
             app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
             app.UseCors();
 
-            // Configure the HTTP request pipeline.
-            app.MapGrpcService<WeatherServiceV1>().EnableGrpcWeb().RequireCors("AllowAll");
+            app.MapGrpcService<WeatherServiceV1>().RequireCors("AllowAll");
 
             if (app.Environment.IsDevelopment())
             {
