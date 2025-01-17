@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option csharp_namespace = "AspNet.GrpcApis";
+
+package weather.v1;
+
+// The weather forecast service definition.
+service WeatherService {
+  // Gets the weather forecast
+  rpc GetWeatherForecast (WeatherForecastRequest) returns (WeatherForecastResponse);
+}
+
+// The request message for the weather forecast.
+message WeatherForecastRequest {}
+
+// The response message containing the weather forecast.
+message WeatherForecastResponse {
+  repeated WeatherForecast forecasts = 1;
+}
+
+// The weather forecast message.
+message WeatherForecast {
+  string date = 1;
+  int32 temperatureC = 2;
+  string summary = 3;
+}
