@@ -1,3 +1,4 @@
+using AspNet.GrpcApis.Protos;
 using Grpc.Core;
 
 namespace AspNet.GrpcApis.Services
