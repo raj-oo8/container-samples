@@ -14,10 +14,7 @@ namespace AspNet.Mvc
 
             // Add services to the container.
             builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"))
-                .EnableTokenAcquisitionToCallDownstreamApi()
-                .AddDownstreamApi("WeatherApi", builder.Configuration.GetSection("DownstreamApi"))
-                .AddInMemoryTokenCaches();
+                .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
 
             builder.Services.AddControllersWithViews(options =>
             {
