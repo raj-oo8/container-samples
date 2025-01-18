@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AspNet", "AspNet", "{0DAB0F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNet.GrpcApis", "AspNet\AspNet.GrpcApis\AspNet.GrpcApis.csproj", "{ED84D89F-2CB1-4CE2-B669-C29D7348DE2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNet.Mvc", "AspNet\AspNet.Mvc\AspNet.Mvc.csproj", "{B1962959-4E8E-46AF-AFB2-11FEC78F03BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,10 @@ Global
 		{ED84D89F-2CB1-4CE2-B669-C29D7348DE2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED84D89F-2CB1-4CE2-B669-C29D7348DE2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED84D89F-2CB1-4CE2-B669-C29D7348DE2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1962959-4E8E-46AF-AFB2-11FEC78F03BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1962959-4E8E-46AF-AFB2-11FEC78F03BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1962959-4E8E-46AF-AFB2-11FEC78F03BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1962959-4E8E-46AF-AFB2-11FEC78F03BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,6 +65,7 @@ Global
 		{E3969A9F-5C14-4F5E-8F45-AC11FABCFAA9} = {D6F4C0F2-A708-4E53-B7C0-618E2A8109D9}
 		{57C1382B-3B65-427D-BC70-83EB00CB073D} = {D6F4C0F2-A708-4E53-B7C0-618E2A8109D9}
 		{ED84D89F-2CB1-4CE2-B669-C29D7348DE2B} = {0DAB0FC5-9597-4A8F-86A6-BE2DC2582CD9}
+		{B1962959-4E8E-46AF-AFB2-11FEC78F03BF} = {0DAB0FC5-9597-4A8F-86A6-BE2DC2582CD9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FC1F331B-D329-4F51-BCDD-775667D45635}
