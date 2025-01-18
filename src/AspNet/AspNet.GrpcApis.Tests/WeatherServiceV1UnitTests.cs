@@ -19,6 +19,7 @@ namespace AspNet.GrpcApis.Tests
 
             // Assert
             Assert.NotNull(result);
+            Assert.True(result.Forecasts.Count > 0, "The collection count should be greater than 0.");
         }
     }
 }
