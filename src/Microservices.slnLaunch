@@ -3,7 +3,7 @@
     "Name": "AspNet",
     "Projects": [
       {
-        "Path": "AspNet\\AspNet.GrpcApis\\AspNet.GrpcApis.csproj",
+        "Path": "AspNet\\AspNet.GrpcApis\\AspNet.Grpc.Api.csproj",
         "Action": "Start",
         "DebugTarget": "https"
       },

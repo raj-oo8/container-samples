@@ -1,9 +1,9 @@
-﻿using AspNet.Library.Protos;
-using AspNet.GrpcApis.Services;
+﻿using AspNet.Grpc.Api.Services;
+using AspNet.Library.Protos;
 using Grpc.Core;
 using NSubstitute;
 
-namespace AspNet.GrpcApis.Tests
+namespace AspNet.Grpc.Api.Tests
 {
     public class WeatherServiceV1UnitTests
     {

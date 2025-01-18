@@ -12,19 +12,19 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["AspNet/AspNet.GrpcApis/AspNet.GrpcApis.csproj", "AspNet/AspNet.GrpcApis/"]
-RUN dotnet restore "./AspNet/AspNet.GrpcApis/AspNet.GrpcApis.csproj"
+COPY ["AspNet/AspNet.Grpc.Api/AspNet.Grpc.Api.csproj", "AspNet/AspNet.Grpc.Api/"]
+RUN dotnet restore "./AspNet/AspNet.Grpc.Api/AspNet.Grpc.Api.csproj"
 COPY . .
-WORKDIR "/src/AspNet/AspNet.GrpcApis"
-RUN dotnet build "./AspNet.GrpcApis.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/AspNet/AspNet.Grpc.Api"
+RUN dotnet build "./AspNet.Grpc.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./AspNet.GrpcApis.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./AspNet.Grpc.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "AspNet.GrpcApis.dll"]
+ENTRYPOINT ["dotnet", "AspNet.Grpc.Api.dll"]

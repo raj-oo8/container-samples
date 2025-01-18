@@ -1,8 +1,7 @@
 using AspNet.Library.Protos;
 using Grpc.Core;
-using Microsoft.AspNetCore.Authorization;
 
-namespace AspNet.GrpcApis.Services
+namespace AspNet.Grpc.Api.Services
 {
     //[Authorize]
     public class WeatherServiceV1 : WeatherService.WeatherServiceBase

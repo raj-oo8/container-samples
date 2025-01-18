@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AspNet.GrpcApis\AspNet.GrpcApis.csproj" />
+    <ProjectReference Include="..\AspNet.Grpc.Api\AspNet.Grpc.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,8 +1,8 @@
-using AspNet.GrpcApis.Services;
+using AspNet.Grpc.Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 
-namespace AspNet.GrpcApis
+namespace AspNet.Grpc.Api
 {
     /// <summary>
     /// The main program class for the gRPC service application.
