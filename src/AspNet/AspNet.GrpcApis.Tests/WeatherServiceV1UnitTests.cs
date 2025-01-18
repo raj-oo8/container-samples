@@ -1,4 +1,4 @@
-﻿using AspNet.GrpcApis.Protos;
+﻿using AspNet.Library.Protos;
 using AspNet.GrpcApis.Services;
 using Grpc.Core;
 using NSubstitute;

@@ -10,10 +10,6 @@
     <IncludeHttpRuleProtos>true</IncludeHttpRuleProtos>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Protobuf Include="Protos\weather_v1.proto" GrpcServices="Server" />
-  </ItemGroup>
-
   <PropertyGroup>
     <OpenApiGenerateDocuments>true</OpenApiGenerateDocuments>
     <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)</OpenApiDocumentsDirectory>
@@ -34,6 +30,10 @@
     <PackageReference Include="Microsoft.Identity.Web" Version="3.6.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="7.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AspNet.Library\AspNet.Library.csproj" />
   </ItemGroup>
 
 </Project>

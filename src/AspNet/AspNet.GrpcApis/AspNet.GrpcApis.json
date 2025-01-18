@@ -24,7 +24,7 @@
         }
       }
     },
-    "/weather/v1/GetWeatherForecast": {
+    "/v1/weather/forecast": {
       "get": {
         "tags": [
           "WeatherService"

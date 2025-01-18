@@ -1,10 +1,10 @@
-using AspNet.GrpcApis.Protos;
+using AspNet.Library.Protos;
 using Grpc.Core;
 using Microsoft.AspNetCore.Authorization;
 
 namespace AspNet.GrpcApis.Services
 {
-    [Authorize]
+    //[Authorize]
     public class WeatherServiceV1 : WeatherService.WeatherServiceBase
     {
         private static readonly string[] Summaries =
