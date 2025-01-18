@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "AspNet.GrpcApis | v1",
-    "version": "1.0.0"
+    "title": "AspNet.GrpcApis",
+    "version": "1.0"
   },
   "paths": {
     "/": {
@@ -34,15 +34,19 @@
             "description": "OK",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {
+                  "$ref": "#/components/schemas/WeatherForecastResponse"
+                }
               }
             }
           },
           "default": {
-            "description": "",
+            "description": "Error",
             "content": {
               "application/json": {
-                "schema": { }
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
               }
             }
           }
@@ -50,13 +54,162 @@
       }
     }
   },
-  "components": { },
-  "tags": [
-    {
-      "name": "AspNet.GrpcApis"
-    },
-    {
-      "name": "WeatherService"
+  "components": {
+    "schemas": {
+      "Any": {
+        "required": [
+          "@type"
+        ],
+        "type": "object",
+        "properties": {
+          "@type": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": {
+          "$ref": "#/components/schemas/Value"
+        }
+      },
+      "KindOneofCase": {
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "ListValue": {
+        "type": "object",
+        "properties": {
+          "values": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Value"
+            },
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "NullValue": {
+        "enum": [
+          0
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "Status": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Any"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "Struct": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Value"
+            },
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Value": {
+        "type": "object",
+        "properties": {
+          "nullValue": {
+            "$ref": "#/components/schemas/NullValue"
+          },
+          "hasNullValue": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "numberValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "hasNumberValue": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "stringValue": {
+            "type": "string",
+            "nullable": true
+          },
+          "hasStringValue": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "boolValue": {
+            "type": "boolean"
+          },
+          "hasBoolValue": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "structValue": {
+            "$ref": "#/components/schemas/Struct"
+          },
+          "listValue": {
+            "$ref": "#/components/schemas/ListValue"
+          },
+          "kindCase": {
+            "$ref": "#/components/schemas/KindOneofCase"
+          }
+        },
+        "additionalProperties": false
+      },
+      "WeatherForecast": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "temperatureC": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "summary": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "WeatherForecastResponse": {
+        "type": "object",
+        "properties": {
+          "forecasts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WeatherForecast"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
     }
-  ]
+  }
 }

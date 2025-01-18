@@ -1,4 +1,6 @@
 using AspNet.GrpcApis.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Identity.Web;
 
 namespace AspNet.GrpcApis
 {
@@ -15,10 +17,14 @@ namespace AspNet.GrpcApis
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+
             // Add services to the container.
             builder.Services.AddGrpc().AddJsonTranscoding();
             builder.Services.AddGrpcSwagger();
-            builder.Services.AddOpenApi();
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
             builder.Services.AddGrpcReflection();
 
             builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder =>
@@ -31,18 +37,17 @@ namespace AspNet.GrpcApis
 
             var app = builder.Build();
 
-            app.MapOpenApi();
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwaggerUI(options =>
-                {
-                    options.SwaggerEndpoint("/openapi/v1.json", "v1");
-                });
-
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
 
             app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
             app.UseCors();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapGrpcService<WeatherServiceV1>().RequireCors("AllowAll");
 
