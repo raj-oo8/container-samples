@@ -1,33 +1,14 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "AspNet.GrpcApis",
-    "version": "1.0"
+    "title": "WeatherServiceV2",
+    "version": "v2"
   },
   "paths": {
-    "/": {
+    "/v2/weather/forecast": {
       "get": {
         "tags": [
-          "AspNet.GrpcApis"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/weather/forecast": {
-      "get": {
-        "tags": [
-          "WeatherService"
+          "WeatherRpcServiceV2"
         ],
         "responses": {
           "200": {
@@ -35,7 +16,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WeatherForecastResponse"
+                  "$ref": "#/components/schemas/WeatherForecastResponseV2"
                 }
               }
             }
@@ -182,7 +163,31 @@
         },
         "additionalProperties": false
       },
-      "WeatherForecast": {
+      "WeatherForecastResponseV1": {
+        "type": "object",
+        "properties": {
+          "forecasts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WeatherForecastV1"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "WeatherForecastResponseV2": {
+        "type": "object",
+        "properties": {
+          "forecasts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WeatherForecastV2"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "WeatherForecastV1": {
         "type": "object",
         "properties": {
           "date": {
@@ -198,14 +203,26 @@
         },
         "additionalProperties": false
       },
-      "WeatherForecastResponse": {
+      "WeatherForecastV2": {
         "type": "object",
         "properties": {
-          "forecasts": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/WeatherForecast"
-            }
+          "date": {
+            "type": "string"
+          },
+          "temperatureC": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "temperatureF": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "humidity": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false

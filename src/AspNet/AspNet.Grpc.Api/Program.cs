@@ -1,6 +1,8 @@
+using AspNet.Grpc.Api.Filters;
 using AspNet.Grpc.Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
+using Microsoft.OpenApi.Models;
 
 namespace AspNet.Grpc.Api
 {
@@ -26,6 +28,12 @@ namespace AspNet.Grpc.Api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddGrpcReflection();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WeatherServiceV1", Version = "v1" });
+                c.SwaggerDoc("v2", new OpenApiInfo { Title = "WeatherServiceV2", Version = "v2" });
+                c.DocumentFilter<RemoveVersionParameterFilter>();
+            });
 
             builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder =>
             {
@@ -40,7 +48,11 @@ namespace AspNet.Grpc.Api
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "WeatherServiceV1");
+                    c.SwaggerEndpoint("/swagger/v2/swagger.json", "WeatherServiceV2");
+                });
             }
 
             app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });

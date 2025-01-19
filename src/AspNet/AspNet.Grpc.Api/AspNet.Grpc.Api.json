@@ -1,29 +1,10 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "AspNet.Grpc.Api",
-    "version": "1.0"
+    "title": "WeatherServiceV1",
+    "version": "v1"
   },
   "paths": {
-    "/": {
-      "get": {
-        "tags": [
-          "AspNet.Grpc.Api"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/v1/weather/forecast": {
       "get": {
         "tags": [
@@ -36,35 +17,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/WeatherForecastResponseV1"
-                }
-              }
-            }
-          },
-          "default": {
-            "description": "Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Status"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v2/weather/forecast": {
-      "get": {
-        "tags": [
-          "WeatherRpcServiceV2"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/WeatherForecastResponseV2"
                 }
               }
             }

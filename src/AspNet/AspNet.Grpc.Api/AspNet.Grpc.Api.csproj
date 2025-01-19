@@ -36,4 +36,8 @@
     <ProjectReference Include="..\AspNet.Library\AspNet.Library.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Filters\" />
+  </ItemGroup>
+
 </Project>
