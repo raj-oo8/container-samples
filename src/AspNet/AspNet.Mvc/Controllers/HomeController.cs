@@ -10,19 +10,36 @@ namespace AspNet.Mvc.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        private readonly WeatherService.WeatherServiceClient _weatherServiceClient;
+        private readonly WeatherRpcServiceV1.WeatherRpcServiceV1Client _weatherRpcServiceV1Client;
+        private readonly WeatherRpcServiceV2.WeatherRpcServiceV2Client _weatherRpcServiceV2Client;
+        private readonly IPreviewService _previewService;
 
-        public HomeController(WeatherService.WeatherServiceClient weatherServiceClient)
+        public HomeController(
+            WeatherRpcServiceV1.WeatherRpcServiceV1Client weatherRpcServiceV1Client, 
+            WeatherRpcServiceV2.WeatherRpcServiceV2Client weatherRpcServiceV2Client,
+            IPreviewService previewService)
         {
-            _weatherServiceClient = weatherServiceClient;
+            _weatherRpcServiceV1Client = weatherRpcServiceV1Client;
+            _weatherRpcServiceV2Client = weatherRpcServiceV2Client;
+            _previewService = previewService;
+
         }
 
         [AuthorizeForScopes(ScopeKeySection = "DownstreamApi:Scopes")]
         public IActionResult Index()
         {
-            var weatherForecastResponse = _weatherServiceClient.GetWeatherForecast(new WeatherForecastRequest());
-            IEnumerable<WeatherForecast> forecasts = weatherForecastResponse.Forecasts;
-            return View(forecasts);
+            if (!_previewService.IsPreviewEnabled)
+            {
+                var weatherForecastResponse = _weatherRpcServiceV1Client.GetWeatherForecast(new WeatherForecastRequestV1());
+                IEnumerable<WeatherForecastV1> forecasts = weatherForecastResponse.Forecasts;
+                return View(forecasts);
+            }
+            else
+            {
+                var weatherForecastResponse = _weatherRpcServiceV2Client.GetWeatherForecast(new WeatherForecastRequestV2());
+                IEnumerable<WeatherForecastV2> forecasts = weatherForecastResponse.Forecasts;
+                return View("IndexPreview", forecasts);
+            }
         }
 
         public IActionResult Privacy()

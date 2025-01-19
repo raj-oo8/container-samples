@@ -17,7 +17,19 @@ namespace AspNet.Mvc
             builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
 
-            builder.Services.AddGrpcClient<WeatherService.WeatherServiceClient>(o =>
+            bool isPreviewEnabled = builder.Configuration.GetValue<bool>("IsPreviewEnabled");
+            builder.Services.AddSingleton<IPreviewService>(sp => new PreviewService(isPreviewEnabled));
+
+            builder.Services.AddGrpcClient<WeatherRpcServiceV1.WeatherRpcServiceV1Client>(o =>
+            {
+                var baseUrl = builder.Configuration["DownstreamApi:BaseUrl"];
+                if (!string.IsNullOrWhiteSpace(baseUrl))
+                {
+                    o.Address = new Uri(baseUrl);
+                }
+            });
+
+            builder.Services.AddGrpcClient<WeatherRpcServiceV2.WeatherRpcServiceV2Client>(o =>
             {
                 var baseUrl = builder.Configuration["DownstreamApi:BaseUrl"];
                 if (!string.IsNullOrWhiteSpace(baseUrl))

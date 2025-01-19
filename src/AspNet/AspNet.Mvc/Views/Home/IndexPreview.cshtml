@@ -1,6 +1,6 @@
 @using AspNet.Library.Protos
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home Page (Preview)";
 }
 
 <div class="text-center">
@@ -8,7 +8,7 @@
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
-@model IEnumerable<WeatherForecastV1>
+@model IEnumerable<WeatherForecastV2>
 
 <h1>Weather Forecasts</h1>
 
@@ -16,7 +16,9 @@
     <thead>
         <tr>
             <th>Date</th>
-            <th>Temperature</th>
+            <th>Temperature (C)</th>
+            <th>Temperature (F)</th>
+            <th>Humidity</th>
             <th>Summary</th>
         </tr>
     </thead>
@@ -26,6 +28,8 @@
             <tr>
                 <td>@forecast.Date</td>
                 <td>@forecast.TemperatureC</td>
+                <td>@forecast.TemperatureF</td>
+                <td>@forecast.Humidity</td>
                 <td>@forecast.Summary</td>
             </tr>
         }

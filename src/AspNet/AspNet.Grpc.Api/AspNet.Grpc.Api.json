@@ -27,7 +27,7 @@
     "/v1/weather/forecast": {
       "get": {
         "tags": [
-          "WeatherService"
+          "WeatherRpcServiceV1"
         ],
         "responses": {
           "200": {
@@ -35,7 +35,36 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WeatherForecastResponse"
+                  "$ref": "#/components/schemas/WeatherForecastResponseV1"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/weather/forecast": {
+      "get": {
+        "tags": [
+          "WeatherRpcServiceV2"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeatherForecastResponseV2"
                 }
               }
             }
@@ -182,7 +211,31 @@
         },
         "additionalProperties": false
       },
-      "WeatherForecast": {
+      "WeatherForecastResponseV1": {
+        "type": "object",
+        "properties": {
+          "forecasts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WeatherForecastV1"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "WeatherForecastResponseV2": {
+        "type": "object",
+        "properties": {
+          "forecasts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WeatherForecastV2"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "WeatherForecastV1": {
         "type": "object",
         "properties": {
           "date": {
@@ -198,14 +251,26 @@
         },
         "additionalProperties": false
       },
-      "WeatherForecastResponse": {
+      "WeatherForecastV2": {
         "type": "object",
         "properties": {
-          "forecasts": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/WeatherForecast"
-            }
+          "date": {
+            "type": "string"
+          },
+          "temperatureC": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "temperatureF": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "humidity": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false

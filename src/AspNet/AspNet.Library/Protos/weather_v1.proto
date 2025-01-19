@@ -7,9 +7,9 @@ package weather.v1;
 import "google/api/annotations.proto";
 
 // The weather forecast service definition.
-service WeatherService {
+service WeatherRpcServiceV1 {
   // Gets the weather forecast
-  rpc GetWeatherForecast (WeatherForecastRequest) returns (WeatherForecastResponse){
+  rpc GetWeatherForecast (WeatherForecastRequestV1) returns (WeatherForecastResponseV1){
 	  option (google.api.http) = {
       get: "/v1/weather/forecast"
     };
@@ -17,15 +17,15 @@ service WeatherService {
 }
 
 // The request message for the weather forecast.
-message WeatherForecastRequest {}
+message WeatherForecastRequestV1 {}
 
 // The response message containing the weather forecast.
-message WeatherForecastResponse {
-  repeated WeatherForecast forecasts = 1;
+message WeatherForecastResponseV1 {
+  repeated WeatherForecastV1 forecasts = 1;
 }
 
 // The weather forecast message.
-message WeatherForecast {
+message WeatherForecastV1 {
   string date = 1;
   int32 temperatureC = 2;
   string summary = 3;

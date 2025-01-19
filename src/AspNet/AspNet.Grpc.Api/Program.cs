@@ -50,6 +50,7 @@ namespace AspNet.Grpc.Api
             app.UseAuthorization();
 
             app.MapGrpcService<WeatherServiceV1>().RequireCors("AllowAll");
+            app.MapGrpcService<WeatherServiceV2>().RequireCors("AllowAll");
 
             if (app.Environment.IsDevelopment())
             {
