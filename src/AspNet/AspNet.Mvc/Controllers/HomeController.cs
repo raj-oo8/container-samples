@@ -1,3 +1,4 @@
+using AspNet.Library.Protos;
 using AspNet.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,10 +10,19 @@ namespace AspNet.Mvc.Controllers
     [Authorize]
     public class HomeController : Controller
     {
+        private readonly WeatherService.WeatherServiceClient _weatherServiceClient;
+
+        public HomeController(WeatherService.WeatherServiceClient weatherServiceClient)
+        {
+            _weatherServiceClient = weatherServiceClient;
+        }
+
         [AuthorizeForScopes(ScopeKeySection = "DownstreamApi:Scopes")]
         public IActionResult Index()
         {
-            return View();
+            var weatherForecastResponse = _weatherServiceClient.GetWeatherForecast(new WeatherForecastRequest());
+            IEnumerable<WeatherForecast> forecasts = weatherForecastResponse.Forecasts;
+            return View(forecasts);
         }
 
         public IActionResult Privacy()

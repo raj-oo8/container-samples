@@ -1,3 +1,4 @@
+@using AspNet.Library.Protos
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -7,5 +8,26 @@
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
-<div>API result</div>
-<div>@ViewData["ApiResult"]</div>
+@model IEnumerable<WeatherForecast>
+
+<h1>Weather Forecasts</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Temperature</th>
+            <th>Summary</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var forecast in Model)
+        {
+            <tr>
+                <td>@forecast.Date</td>
+                <td>@forecast.TemperatureC</td>
+                <td>@forecast.Summary</td>
+            </tr>
+        }
+    </tbody>
+</table>

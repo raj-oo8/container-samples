@@ -1,3 +1,4 @@
+using AspNet.Library.Protos;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -15,6 +16,15 @@ namespace AspNet.Mvc
             // Add services to the container.
             builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
+
+            builder.Services.AddGrpcClient<WeatherService.WeatherServiceClient>(o =>
+            {
+                var baseUrl = builder.Configuration["DownstreamApi:BaseUrl"];
+                if (!string.IsNullOrWhiteSpace(baseUrl))
+                {
+                    o.Address = new Uri(baseUrl);
+                }
+            });
 
             builder.Services.AddControllersWithViews(options =>
             {
