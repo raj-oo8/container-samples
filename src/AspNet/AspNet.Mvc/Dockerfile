@@ -7,6 +7,18 @@ WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
+ENV AzureAd__Instance="https://login.microsoftonline.com/"
+ENV AzureAd__Domain="rjsse8outlook.onmicrosoft.com"
+ENV AzureAd__TenantId="b892c9c4-f38d-4359-84dc-3382f8dba4ed"
+ENV AzureAd__ClientId="457cdf20-48af-4e0c-a708-45ae08ba7a09"
+ENV AzureAd__CallbackPath="/signin-oidc"
+ENV AzureAd__ClientSecret="your-client-secret"
+ENV Logging__LogLevel__Default="Information"
+ENV Logging__LogLevel__Microsoft_AspNetCore="Warning"
+ENV AllowedHosts="*"
+ENV DownstreamApi__BaseUrl="https://localhost:32805"
+ENV DownstreamApi__Scopes__0="api://20617e17-61c9-4b69-b842-e30adc5d3570/Forecast.Read"
+ENV IsPreviewEnabled=true
 
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build

@@ -1,6 +1,6 @@
 [
   {
-    "Name": "AspNet",
+    "Name": "AspNet (https)",
     "Projects": [
       {
         "Path": "AspNet\\AspNet.Mvc\\AspNet.Mvc.csproj",
@@ -11,6 +11,21 @@
         "Path": "AspNet\\AspNet.Grpc.Api\\AspNet.Grpc.Api.csproj",
         "Action": "Start",
         "DebugTarget": "https"
+      }
+    ]
+  },
+  {
+    "Name": "AspNet (Docker)",
+    "Projects": [
+      {
+        "Path": "AspNet\\AspNet.Mvc\\AspNet.Mvc.csproj",
+        "Action": "Start",
+        "DebugTarget": "Container (Dockerfile)"
+      },
+      {
+        "Path": "AspNet\\AspNet.Grpc.Api\\AspNet.Grpc.Api.csproj",
+        "Action": "Start",
+        "DebugTarget": "Container (Dockerfile)"
       }
     ]
   }
