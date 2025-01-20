@@ -1,3 +1,6 @@
+using AspNet.Grpc.Api.Services;
+using AspNet.Library.Protos;
+using Grpc.Net.Client;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.NetworkInformation;
 
@@ -34,13 +37,19 @@ namespace AspNet.Grpc.Api.Controllers
         [HttpGet("live")]
         public async Task<IActionResult> GetLivenessStatus()
         {
-            var host = HttpContext.Request.Host.Host;
+            var request = HttpContext.Request;
+            var host = $"{request.Scheme}://{request.Host.Value}";
+
+            if (string.IsNullOrWhiteSpace(host))
+            {
+                return StatusCode(503, "Liveness check failed.");
+            }
 
             try
             {
-                using var ping = new Ping();
-                var reply = await ping.SendPingAsync(host);
-                if (reply.Status == IPStatus.Success)
+                var client = new WeatherRpcServiceV1.WeatherRpcServiceV1Client(GrpcChannel.ForAddress(host));
+                var weatherForecastResponse = await client.GetWeatherForecastAsync(new WeatherForecastRequestV1());
+                if (weatherForecastResponse.Forecasts.Count() > 0)
                 {
                     return Ok("Liveness check passed.");
                 }
