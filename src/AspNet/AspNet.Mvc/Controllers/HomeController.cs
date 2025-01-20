@@ -1,5 +1,6 @@
 using AspNet.Library.Protos;
 using AspNet.Mvc.Models;
+using Grpc.Net.Client;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web;
@@ -10,36 +11,46 @@ namespace AspNet.Mvc.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        private readonly WeatherRpcServiceV1.WeatherRpcServiceV1Client _weatherRpcServiceV1Client;
-        private readonly WeatherRpcServiceV2.WeatherRpcServiceV2Client _weatherRpcServiceV2Client;
         private readonly IPreviewService _previewService;
+        private readonly IConfiguration _configuration;
 
         public HomeController(
-            WeatherRpcServiceV1.WeatherRpcServiceV1Client weatherRpcServiceV1Client, 
-            WeatherRpcServiceV2.WeatherRpcServiceV2Client weatherRpcServiceV2Client,
+            IConfiguration configuration,
             IPreviewService previewService)
         {
-            _weatherRpcServiceV1Client = weatherRpcServiceV1Client;
-            _weatherRpcServiceV2Client = weatherRpcServiceV2Client;
+            _configuration = configuration;
             _previewService = previewService;
-
         }
 
         [AuthorizeForScopes(ScopeKeySection = "DownstreamApi:Scopes")]
         public IActionResult Index()
         {
-            if (!_previewService.IsPreviewEnabled)
+            var baseUrl = _configuration["DownstreamApi:BaseUrl"];
+            if (!string.IsNullOrWhiteSpace(baseUrl))
             {
-                var weatherForecastResponse = _weatherRpcServiceV1Client.GetWeatherForecast(new WeatherForecastRequestV1());
-                IEnumerable<WeatherForecastV1> forecasts = weatherForecastResponse.Forecasts;
-                return View(forecasts);
+                try
+                {
+                    if (!_previewService.IsPreviewEnabled)
+                    {
+                        var client = new WeatherRpcServiceV1.WeatherRpcServiceV1Client(GrpcChannel.ForAddress(baseUrl));
+                        var weatherForecastResponse = client.GetWeatherForecast(new WeatherForecastRequestV1());
+                        IEnumerable<WeatherForecastV1> forecasts = weatherForecastResponse.Forecasts;
+                        return View(forecasts);
+                    }
+                    else
+                    {
+                        var client = new WeatherRpcServiceV2.WeatherRpcServiceV2Client(GrpcChannel.ForAddress(baseUrl));
+                        var weatherForecastResponse = client.GetWeatherForecast(new WeatherForecastRequestV2());
+                        IEnumerable<WeatherForecastV2> forecasts = weatherForecastResponse.Forecasts;
+                        return View("IndexPreview", forecasts);
+                    }
+                }
+                catch (Exception)
+                {
+                    
+                }
             }
-            else
-            {
-                var weatherForecastResponse = _weatherRpcServiceV2Client.GetWeatherForecast(new WeatherForecastRequestV2());
-                IEnumerable<WeatherForecastV2> forecasts = weatherForecastResponse.Forecasts;
-                return View("IndexPreview", forecasts);
-            }
+            return View(new List<WeatherForecastV1>());
         }
 
         public IActionResult Privacy()

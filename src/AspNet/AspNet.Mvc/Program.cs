@@ -1,4 +1,3 @@
-using AspNet.Library.Protos;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -19,24 +18,6 @@ namespace AspNet.Mvc
 
             bool isPreviewEnabled = builder.Configuration.GetValue<bool>("IsPreviewEnabled");
             builder.Services.AddSingleton<IPreviewService>(sp => new PreviewService(isPreviewEnabled));
-
-            builder.Services.AddGrpcClient<WeatherRpcServiceV1.WeatherRpcServiceV1Client>(o =>
-            {
-                var baseUrl = builder.Configuration["DownstreamApi:BaseUrl"];
-                if (!string.IsNullOrWhiteSpace(baseUrl))
-                {
-                    o.Address = new Uri(baseUrl);
-                }
-            });
-
-            builder.Services.AddGrpcClient<WeatherRpcServiceV2.WeatherRpcServiceV2Client>(o =>
-            {
-                var baseUrl = builder.Configuration["DownstreamApi:BaseUrl"];
-                if (!string.IsNullOrWhiteSpace(baseUrl))
-                {
-                    o.Address = new Uri(baseUrl);
-                }
-            });
 
             builder.Services.AddControllersWithViews(options =>
             {

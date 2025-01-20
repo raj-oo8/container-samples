@@ -1,9 +1,7 @@
-using AspNet.Library.Protos;
-using Grpc.Net.Client;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.NetworkInformation;
 
-namespace AspNet.Grpc.Api.Controllers
+namespace AspNet.Mvc.Controllers
 {
     [ApiController]
     [Route("healthz")]
@@ -34,21 +32,14 @@ namespace AspNet.Grpc.Api.Controllers
         }
 
         [HttpGet("live")]
-        public async Task<IActionResult> GetLivenessStatus()
+        public IActionResult GetLivenessStatus()
         {
             var request = HttpContext.Request;
             var host = $"{request.Scheme}://{request.Host.Value}";
 
-            if (string.IsNullOrWhiteSpace(host))
-            {
-                return StatusCode(503, "Liveness check failed.");
-            }
-
             try
-            {
-                var client = new WeatherRpcServiceV1.WeatherRpcServiceV1Client(GrpcChannel.ForAddress(host));
-                var weatherForecastResponse = await client.GetWeatherForecastAsync(new WeatherForecastRequestV1());
-                if (weatherForecastResponse.Forecasts.Count() > 0)
+            {               
+                if (!string.IsNullOrWhiteSpace(host))
                 {
                     return Ok("Liveness check passed.");
                 }
