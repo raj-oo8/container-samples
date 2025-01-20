@@ -30,28 +30,5 @@ namespace AspNet.Mvc.Controllers
                 return StatusCode(503, "Readiness check failed.");
             }
         }
-
-        [HttpGet("live")]
-        public IActionResult GetLivenessStatus()
-        {
-            var request = HttpContext.Request;
-            var host = $"{request.Scheme}://{request.Host.Value}";
-
-            try
-            {               
-                if (!string.IsNullOrWhiteSpace(host))
-                {
-                    return Ok("Liveness check passed.");
-                }
-                else
-                {
-                    return StatusCode(503, "Liveness check failed.");
-                }
-            }
-            catch
-            {
-                return StatusCode(503, "Liveness check failed.");
-            }
-        }
     }
 }
