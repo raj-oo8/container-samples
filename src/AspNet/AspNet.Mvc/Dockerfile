@@ -16,7 +16,7 @@ ENV AzureAd__ClientSecret="your-client-secret"
 ENV Logging__LogLevel__Default="Information"
 ENV Logging__LogLevel__Microsoft_AspNetCore="Warning"
 ENV AllowedHosts="*"
-ENV DownstreamApi__BaseUrl="https://localhost:32805"
+ENV DownstreamApi__BaseUrl="https://localhost:32819"
 ENV DownstreamApi__Scopes__0="api://20617e17-61c9-4b69-b842-e30adc5d3570/Forecast.Read"
 ENV IsPreviewEnabled=true
 

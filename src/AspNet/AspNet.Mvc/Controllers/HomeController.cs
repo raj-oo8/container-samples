@@ -13,13 +13,16 @@ namespace AspNet.Mvc.Controllers
     {
         private readonly IPreviewService _previewService;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<HomeController> _logger;
 
         public HomeController(
             IConfiguration configuration,
-            IPreviewService previewService)
+            IPreviewService previewService,
+            ILogger<HomeController> logger)
         {
             _configuration = configuration;
             _previewService = previewService;
+            _logger = logger;
         }
 
         [AuthorizeForScopes(ScopeKeySection = "DownstreamApi:Scopes")]
@@ -45,9 +48,9 @@ namespace AspNet.Mvc.Controllers
                         return View("IndexPreview", forecasts);
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    
+                    _logger.LogError(ex.ToString());
                 }
             }
             return View(new List<WeatherForecastV1>());
