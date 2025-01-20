@@ -19,10 +19,11 @@ namespace AspNet.Grpc.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Add services to the container.
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 
-            // Add services to the container.
+            builder.Services.AddControllers();
             builder.Services.AddGrpc().AddJsonTranscoding();
             builder.Services.AddGrpcSwagger();
             builder.Services.AddEndpointsApiExplorer();
@@ -45,6 +46,7 @@ namespace AspNet.Grpc.Api
 
             var app = builder.Build();
 
+            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -61,6 +63,7 @@ namespace AspNet.Grpc.Api
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.MapControllers();
             app.MapGrpcService<WeatherServiceV1>().RequireCors("AllowAll");
             app.MapGrpcService<WeatherServiceV2>().RequireCors("AllowAll");
 
