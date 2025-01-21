@@ -1,7 +1,5 @@
-using AspNet.Grpc.Api.Services;
 using AspNet.Library.Protos;
 using Grpc.Net.Client;
-using Grpc.Net.Client.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.NetworkInformation;
 
