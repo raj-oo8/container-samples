@@ -6,24 +6,32 @@ namespace AspNet.Grpc.Api.Services
     //[Authorize]
     public class WeatherServiceV1 : WeatherRpcServiceV1.WeatherRpcServiceV1Base
     {
-        private static readonly string[] Summaries =
-        [
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        ];
+        private readonly CosmosDbService _cosmosDbService;
 
-        public override Task<WeatherForecastResponseV1> GetWeatherForecast(WeatherForecastRequestV1 request, ServerCallContext context)
+        public WeatherServiceV1(CosmosDbService cosmosDbService)
         {
-            var forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecastV1
+            _cosmosDbService = cosmosDbService;
+        }
+
+        public override async Task<WeatherForecastResponseV1> GetWeatherForecast(WeatherForecastRequestV1 request, ServerCallContext context)
+        {
+            var summaries = await _cosmosDbService.GetSummariesAsync();
+            var forecasts = new List<WeatherForecastV1>();
+
+            if (summaries.Count > 0)
             {
-                Date = DateTime.Now.AddDays(index).ToString("dd-MMM-yyyy"),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            }).ToList();
+                forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecastV1
+                {
+                    Date = DateTime.Now.AddDays(index).ToString("dd-MMM-yyyy"),
+                    TemperatureC = Random.Shared.Next(-20, 55),
+                    Summary = summaries[Random.Shared.Next(summaries.Count)].SummaryText
+                }).ToList();
+            }
 
             var response = new WeatherForecastResponseV1();
             response.Forecasts.AddRange(forecasts);
 
-            return Task.FromResult(response);
+            return await Task.FromResult(response);
         }
     }
 }

@@ -46,6 +46,8 @@ namespace AspNet.Grpc.Api
                         .WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding");
             }));
 
+            builder.Services.AddSingleton<CosmosDbService>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

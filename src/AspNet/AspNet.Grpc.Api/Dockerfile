@@ -14,6 +14,7 @@ ENV Logging__LogLevel__Default="Information"
 ENV Logging__LogLevel__Microsoft_AspNetCore="Warning"
 ENV AllowedHosts="*"
 ENV Kestrel__EndpointDefaults__Protocols="Http1AndHttp2AndHttp3"
+ENV CosmosDb__Endpoint="https://cosmosdb-container-sample.documents.azure.com:443/"
 
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
