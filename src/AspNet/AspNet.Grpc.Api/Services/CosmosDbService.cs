@@ -7,23 +7,29 @@ namespace AspNet.Grpc.Api.Services
 {
     public class CosmosDbService
     {
-        private readonly CosmosClient _cosmosClient;
-        private readonly Container _container;
-        private readonly ILogger<CosmosDbService> _logger;
+        readonly CosmosClient? _cosmosClient;
+        readonly Container? _container;
+        readonly ILogger<CosmosDbService> _logger;
+        readonly EventId eventId = new(200, typeof(CosmosDbService).FullName);
 
         public CosmosDbService(IConfiguration configuration, ILogger<CosmosDbService> logger)
         {
+            _logger = logger;
+            _logger.LogInformation(eventId, "Starting service...");
+
             var accountEndpoint = configuration["CosmosDb:Endpoint"];
             var tenantId = configuration["AzureAd:TenantId"];
 
-            if (string.IsNullOrEmpty(accountEndpoint))
+            if (string.IsNullOrWhiteSpace(accountEndpoint))
             {
-                throw new ArgumentException("CosmosDb:Endpoint configuration value is missing or empty.");
+                _logger.LogError(eventId, "CosmosDb:Endpoint configuration value is missing or empty.");
+                return;
             }
 
-            if (string.IsNullOrEmpty(tenantId))
+            if (string.IsNullOrWhiteSpace(tenantId))
             {
-                throw new ArgumentException("AzureAd:TenantId configuration value is missing or empty.");
+                _logger.LogError(eventId, "AzureAd:TenantId configuration value is missing or empty.");
+                return;
             }
 
             var credentialOptions = new DefaultAzureCredentialOptions
@@ -33,30 +39,36 @@ namespace AspNet.Grpc.Api.Services
 
             _cosmosClient = new CosmosClient(accountEndpoint, new DefaultAzureCredential(credentialOptions));
             _container = _cosmosClient.GetContainer("Weather", "Summaries");
-            _logger = logger;
+
+            _logger.LogInformation(eventId, "Started service successfully");
         }
 
 
-        public async Task<List<Summary>> GetSummariesAsync()
+        internal async Task<List<Summary>> GetSummariesAsync()
         {
             var summaries = new List<Summary>();
+            var methodName = nameof(GetSummariesAsync);
 
             try
             {
-                var queryable = _container.GetItemLinqQueryable<Summary>();
-                using FeedIterator<Summary> linqFeed = queryable.ToFeedIterator();
-                while (linqFeed.HasMoreResults)
+                if (_container != null)
                 {
-                    FeedResponse<Summary> response = await linqFeed.ReadNextAsync();
-
-                    // Iterate query results
-                    summaries.AddRange(response);
+                    var queryable = _container.GetItemLinqQueryable<Summary>();
+                    using FeedIterator<Summary> linqFeed = queryable.ToFeedIterator();
+                    while (linqFeed.HasMoreResults)
+                    {
+                        FeedResponse<Summary> response = await linqFeed.ReadNextAsync();
+                        summaries.AddRange(response);
+                    }
+                }
+                else
+                {
+                    _logger.LogError(eventId, $"Error in {methodName}: {nameof(Container)} object is missing or empty.");
                 }
             }
             catch (CosmosException ex)
             {
-                _logger.LogError(ex, "Error fetching summaries: {Message}", ex.Message);
-                throw;
+                _logger.LogError(eventId, ex, $"Error in {methodName}: {ex.Message}");
             }
 
             return summaries;

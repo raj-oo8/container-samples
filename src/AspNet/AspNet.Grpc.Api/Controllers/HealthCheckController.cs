@@ -1,5 +1,7 @@
+using AspNet.Grpc.Api.Services;
 using AspNet.Library.Protos;
 using Grpc.Net.Client;
+using Grpc.Net.Client.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.NetworkInformation;
 
@@ -10,15 +12,20 @@ namespace AspNet.Grpc.Api.Controllers
     public class HealthCheckController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+        readonly EventId eventId = new(300, typeof(HealthCheckController).FullName);
+        readonly ILogger<HealthCheckController> _logger;
 
-        public HealthCheckController(IConfiguration configuration)
+        public HealthCheckController(IConfiguration configuration, ILogger<HealthCheckController> logger)
         {
+            _logger = logger;
             _configuration = configuration;
         }
 
         [HttpGet("ready")]
         public async Task<IActionResult> GetReadinessStatus()
         {
+            _logger.LogInformation(eventId, $"Starting {nameof(GetReadinessStatus)}...");
+
             var host = HttpContext.Request.Host.Host;
 
             try
@@ -43,6 +50,8 @@ namespace AspNet.Grpc.Api.Controllers
         [HttpGet("live")]
         public async Task<IActionResult> GetLivenessStatus()
         {
+            _logger.LogInformation(eventId, $"Starting {nameof(GetLivenessStatus)}...");
+
             var request = HttpContext.Request;
             var host = $"{request.Scheme}://{request.Host.Value}";
 
@@ -73,6 +82,8 @@ namespace AspNet.Grpc.Api.Controllers
         [HttpGet("startup")]
         public IActionResult GetStartupStatus()
         {
+            _logger.LogInformation(eventId, $"Starting {nameof(GetStartupStatus)}...");
+
             var accountEndpoint = _configuration["CosmosDb:Endpoint"];
             var tenantId = _configuration["AzureAd:TenantId"];
 

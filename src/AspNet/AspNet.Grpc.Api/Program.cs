@@ -11,18 +11,35 @@ namespace AspNet.Grpc.Api
 {
     public class Program
     {
+        static readonly EventId eventId = new(100, typeof(Program).FullName);
+
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
             await ConfigureServicesAsync(builder);
 
             var app = builder.Build();
-            ConfigureApp(app);
 
-            app.Run();
+            try
+            {
+                app.Logger.LogInformation(eventId, "Starting app...");
+
+                ConfigureApp(app);
+
+                app.Logger.LogInformation(eventId, "Configured app successfully");
+
+                app.Run();
+
+                app.Logger.LogInformation(eventId, "Started app successfully");
+            }
+            catch (Exception ex)
+            {
+                app.Logger.LogCritical(eventId, ex, "App failed to start");
+                throw;
+            }
         }
 
-        private static async Task ConfigureServicesAsync(WebApplicationBuilder builder)
+        static async Task ConfigureServicesAsync(WebApplicationBuilder builder)
         {
             builder.Configuration.AddEnvironmentVariables();
 
@@ -63,7 +80,7 @@ namespace AspNet.Grpc.Api
             builder.Services.AddSingleton<CosmosDbService>();
         }
 
-        private static void ConfigureApp(WebApplication app)
+        static void ConfigureApp(WebApplication app)
         {
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
