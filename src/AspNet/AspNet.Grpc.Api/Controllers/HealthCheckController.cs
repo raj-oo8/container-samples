@@ -9,6 +9,13 @@ namespace AspNet.Grpc.Api.Controllers
     [Route("healthz")]
     public class HealthCheckController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
+
+        public HealthCheckController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         [HttpGet("ready")]
         public async Task<IActionResult> GetReadinessStatus()
         {
@@ -61,6 +68,20 @@ namespace AspNet.Grpc.Api.Controllers
             {
                 return StatusCode(503, "Liveness check failed.");
             }
+        }
+
+        [HttpGet("startup")]
+        public IActionResult GetStartupStatus()
+        {
+            var accountEndpoint = _configuration["CosmosDb:Endpoint"];
+            var tenantId = _configuration["AzureAd:TenantId"];
+
+            if (string.IsNullOrWhiteSpace(accountEndpoint) || string.IsNullOrWhiteSpace(tenantId))
+            {
+                return StatusCode(503, "Startup check failed.");
+            }
+
+            return Ok("Startup check passed.");
         }
     }
 }

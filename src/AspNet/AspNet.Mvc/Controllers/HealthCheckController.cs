@@ -7,6 +7,13 @@ namespace AspNet.Mvc.Controllers
     [Route("healthz")]
     public class HealthCheckController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
+
+        public HealthCheckController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         [HttpGet("ready")]
         public async Task<IActionResult> GetReadinessStatus()
         {
@@ -29,6 +36,20 @@ namespace AspNet.Mvc.Controllers
             {
                 return StatusCode(503, "Readiness check failed.");
             }
+        }
+
+        [HttpGet("startup")]
+        public IActionResult GetStartupStatus()
+        {
+            var apiUrl = _configuration["DownstreamApi:BaseUrl"];
+            var tenantId = _configuration["AzureAd:TenantId"];
+
+            if (string.IsNullOrWhiteSpace(apiUrl) || string.IsNullOrWhiteSpace(tenantId))
+            {
+                return StatusCode(503, "Startup check failed.");
+            }
+
+            return Ok("Startup check passed.");
         }
     }
 }
