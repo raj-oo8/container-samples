@@ -8,13 +8,13 @@ EXPOSE 8080
 EXPOSE 8081
 
 ENV AzureAd__Instance="https://login.microsoftonline.com/"
-ENV AzureAd__TenantId="b892c9c4-f38d-4359-84dc-3382f8dba4ed"
-ENV AzureAd__ClientId="457cdf20-48af-4e0c-a708-45ae08ba7a09"
+ENV AzureAd__TenantId=""
+ENV AzureAd__ClientId=""
 ENV Logging__LogLevel__Default="Information"
 ENV Logging__LogLevel__Microsoft_AspNetCore="Warning"
 ENV AllowedHosts="*"
 ENV Kestrel__EndpointDefaults__Protocols="Http1AndHttp2AndHttp3"
-ENV CosmosDb__Endpoint="https://cosmosdb-container-sample.documents.azure.com:443/"
+ENV CosmosDb__Endpoint=""
 
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
