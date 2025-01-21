@@ -28,24 +28,17 @@ namespace AspNet.Grpc.Api.Services
             var summaries = await _cosmosDbService.GetSummariesAsync();
             var forecasts = new List<WeatherForecastV1>();
 
-            if (summaries.Count > 0)
+            forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecastV1
             {
-                forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecastV1
-                {
-                    Date = DateTime.Now.AddDays(index).ToString("dd-MMM-yyyy"),
-                    TemperatureC = Random.Shared.Next(-20, 55),
-                    Summary = summaries[Random.Shared.Next(summaries.Count)].SummaryText
-                }).ToList();
-
-                _logger.LogInformation(eventId, $"Fetched {methodName} successfully");
-            }
-            else
-            {
-                _logger.LogWarning(eventId, $"No summaries found for {methodName}");
-            }
+                Date = DateTime.Now.AddDays(index).ToString("dd-MMM-yyyy"),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = summaries.Count > 0 ? summaries[Random.Shared.Next(summaries.Count)].SummaryText : string.Empty
+            }).ToList();
 
             var response = new WeatherForecastResponseV1();
             response.Forecasts.AddRange(forecasts);
+
+            _logger.LogInformation(eventId, $"Fetched {methodName} successfully");
 
             return await Task.FromResult(response);
         }
