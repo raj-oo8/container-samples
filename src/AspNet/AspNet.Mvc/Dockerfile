@@ -19,6 +19,9 @@ ENV AllowedHosts="*"
 ENV DownstreamApi__BaseUrl=""
 ENV DownstreamApi__Scopes__0=""
 ENV IsPreviewEnabled=false
+ENV KeyVault__AppInsightsConnectionString=""
+ENV KeyVault__EntraIdClientSecret=""
+ENV KeyVault__Url=""
 
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build

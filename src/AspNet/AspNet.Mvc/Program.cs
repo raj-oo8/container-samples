@@ -1,3 +1,6 @@
+using Azure.Identity;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
+using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -8,15 +11,42 @@ namespace AspNet.Mvc
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            await ConfigureServicesAsync(builder);
 
+            var app = builder.Build();
+            ConfigureApp(app);
+
+            app.Run();
+        }
+
+        private static async Task ConfigureServicesAsync(WebApplicationBuilder builder)
+        {
             builder.Configuration.AddEnvironmentVariables();
 
-            // Add services to the container.
-            builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
+            var appInsightsConnectionString = builder.Configuration["KeyVault:AppInsightsConnectionString"];
+
+            if (!string.IsNullOrWhiteSpace(appInsightsConnectionString))
+            {
+                var clientSecret = await GetClientSecretFromKeyVaultAsync(builder.Configuration, appInsightsConnectionString);
+                builder.Services.AddOpenTelemetry().UseAzureMonitor(options => {
+                    options.ConnectionString = clientSecret;
+                });
+            }
+
+            var entraIdClientSecret = builder.Configuration["KeyVault:EntraIdClientSecret"];
+
+            if (!string.IsNullOrWhiteSpace(entraIdClientSecret))
+            {
+                builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+                    .AddMicrosoftIdentityWebApp(options =>
+                    {
+                        builder.Configuration.Bind("AzureAd", options);
+                        options.ClientSecret = entraIdClientSecret;
+                    });
+            }
 
             bool isPreviewEnabled = builder.Configuration.GetValue<bool>("IsPreviewEnabled");
             builder.Services.AddSingleton<IPreviewService>(sp => new PreviewService(isPreviewEnabled));
@@ -30,9 +60,10 @@ namespace AspNet.Mvc
             });
             builder.Services.AddRazorPages()
                 .AddMicrosoftIdentityUI();
+        }
 
-            var app = builder.Build();
-
+        private static void ConfigureApp(WebApplication app)
+        {
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -44,6 +75,7 @@ namespace AspNet.Mvc
             app.UseHttpsRedirection();
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();
@@ -53,8 +85,20 @@ namespace AspNet.Mvc
                 .WithStaticAssets();
             app.MapRazorPages()
                .WithStaticAssets();
+        }
 
-            app.Run();
+        async static Task<string?> GetClientSecretFromKeyVaultAsync(ConfigurationManager configuration, string secretName)
+        {
+            var keyVaultUrl = configuration["KeyVault:Url"];
+
+            if (string.IsNullOrEmpty(keyVaultUrl))
+            {
+                return null;
+            }
+
+            var client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
+            KeyVaultSecret secret = await client.GetSecretAsync(secretName);
+            return secret.Value;
         }
     }
 }

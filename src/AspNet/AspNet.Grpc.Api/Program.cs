@@ -1,27 +1,41 @@
 using AspNet.Grpc.Api.Filters;
 using AspNet.Grpc.Api.Services;
+using Azure.Identity;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
+using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
 
 namespace AspNet.Grpc.Api
 {
-    /// <summary>
-    /// The main program class for the gRPC service application.
-    /// </summary>
     public class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        /// <param name="args">An array of command-line argument strings.</param>
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            await ConfigureServicesAsync(builder);
 
+            var app = builder.Build();
+            ConfigureApp(app);
+
+            app.Run();
+        }
+
+        private static async Task ConfigureServicesAsync(WebApplicationBuilder builder)
+        {
             builder.Configuration.AddEnvironmentVariables();
 
-            // Add services to the container.
+            var appInsightsConnectionString = builder.Configuration["KeyVault:AppInsightsConnectionString"];
+
+            if (!string.IsNullOrWhiteSpace(appInsightsConnectionString))
+            {
+                var clientSecret = await GetClientSecretFromKeyVaultAsync(builder.Configuration, appInsightsConnectionString);
+                builder.Services.AddOpenTelemetry().UseAzureMonitor(options => {
+                    options.ConnectionString = clientSecret;
+                });
+            }
+
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 
@@ -47,9 +61,10 @@ namespace AspNet.Grpc.Api
             }));
 
             builder.Services.AddSingleton<CosmosDbService>();
+        }
 
-            var app = builder.Build();
-
+        private static void ConfigureApp(WebApplication app)
+        {
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -77,8 +92,20 @@ namespace AspNet.Grpc.Api
             }
 
             app.MapGet("/", () => "This gRPC service is gRPC-Web enabled and is callable from browser apps using the gRPC-Web protocol");
+        }
 
-            app.Run();
+        async static Task<string?> GetClientSecretFromKeyVaultAsync(ConfigurationManager configuration, string secretName)
+        {
+            var keyVaultUrl = configuration["KeyVault:Url"];
+
+            if (string.IsNullOrEmpty(keyVaultUrl))
+            {
+                return null;
+            }
+
+            var client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
+            KeyVaultSecret secret = await client.GetSecretAsync(secretName);
+            return secret.Value;
         }
     }
 }

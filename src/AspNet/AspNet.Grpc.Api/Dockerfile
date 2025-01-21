@@ -15,6 +15,8 @@ ENV Logging__LogLevel__Microsoft_AspNetCore="Warning"
 ENV AllowedHosts="*"
 ENV Kestrel__EndpointDefaults__Protocols="Http1AndHttp2AndHttp3"
 ENV CosmosDb__Endpoint=""
+ENV KeyVault__AppInsightsConnectionString=""
+ENV KeyVault__Url=""
 
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
