@@ -8,15 +8,20 @@ namespace AspNet.Mvc.Controllers
     public class HealthCheckController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+        readonly EventId eventId = new(300, typeof(HealthCheckController).FullName);
+        readonly ILogger<HealthCheckController> _logger;
 
-        public HealthCheckController(IConfiguration configuration)
+        public HealthCheckController(IConfiguration configuration, ILogger<HealthCheckController> logger)
         {
+            _logger = logger;
             _configuration = configuration;
         }
 
         [HttpGet("ready")]
         public async Task<IActionResult> GetReadinessStatus()
         {
+            _logger.LogInformation(eventId, $"Starting {nameof(GetReadinessStatus)}...");
+
             var host = HttpContext.Request.Host.Host;
 
             try
@@ -41,6 +46,8 @@ namespace AspNet.Mvc.Controllers
         [HttpGet("startup")]
         public IActionResult GetStartupStatus()
         {
+            _logger.LogInformation(eventId, $"Starting {nameof(GetStartupStatus)}...");
+
             var apiUrl = _configuration["DownstreamApi:BaseUrl"];
             var tenantId = _configuration["AzureAd:TenantId"];
 

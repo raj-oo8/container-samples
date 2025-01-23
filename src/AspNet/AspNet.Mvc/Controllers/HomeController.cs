@@ -3,6 +3,7 @@ using AspNet.Mvc.Models;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
 using System.Diagnostics;
 
@@ -11,9 +12,10 @@ namespace AspNet.Mvc.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        private readonly IPreviewService _previewService;
-        private readonly IConfiguration _configuration;
-        private readonly ILogger<HomeController> _logger;
+        readonly IPreviewService _previewService;
+        readonly IConfiguration _configuration;
+        readonly ILogger<HomeController> _logger;
+        readonly EventId eventId = new(200, typeof(HomeController).FullName);
 
         public HomeController(
             IConfiguration configuration,
@@ -28,6 +30,9 @@ namespace AspNet.Mvc.Controllers
         [AuthorizeForScopes(ScopeKeySection = "DownstreamApi:Scopes")]
         public IActionResult Index()
         {
+            var methodName = nameof(Index);
+            _logger.LogInformation(eventId, $"Starting {methodName}...");
+
             var baseUrl = _configuration["DownstreamApi:BaseUrl"];
             if (!string.IsNullOrWhiteSpace(baseUrl))
             {
@@ -38,6 +43,9 @@ namespace AspNet.Mvc.Controllers
                         var client = new WeatherRpcServiceV1.WeatherRpcServiceV1Client(GrpcChannel.ForAddress(baseUrl));
                         var weatherForecastResponse = client.GetWeatherForecast(new WeatherForecastRequestV1());
                         IEnumerable<WeatherForecastV1> forecasts = weatherForecastResponse.Forecasts;
+
+                        _logger.LogInformation(eventId, $"Fetched {nameof(WeatherForecastV1)} of {methodName} successfully");
+
                         return View(forecasts);
                     }
                     else
@@ -45,12 +53,15 @@ namespace AspNet.Mvc.Controllers
                         var client = new WeatherRpcServiceV2.WeatherRpcServiceV2Client(GrpcChannel.ForAddress(baseUrl));
                         var weatherForecastResponse = client.GetWeatherForecast(new WeatherForecastRequestV2());
                         IEnumerable<WeatherForecastV2> forecasts = weatherForecastResponse.Forecasts;
+
+                        _logger.LogInformation(eventId, $"Fetched {nameof(WeatherForecastV2)} of {methodName} successfully");
+
                         return View("IndexPreview", forecasts);
                     }
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex.ToString());
+                    _logger.LogError(eventId, ex, $"Error in {methodName}: {ex.Message}");
                 }
             }
             return View(new List<WeatherForecastV1>());
@@ -58,6 +69,9 @@ namespace AspNet.Mvc.Controllers
 
         public IActionResult Privacy()
         {
+            var methodName = nameof(Privacy);
+            _logger.LogInformation(eventId, $"Starting {methodName}...");
+
             return View();
         }
 
