@@ -32,12 +32,7 @@ namespace AspNet.Grpc.Api.Services
                 return;
             }
 
-            var credentialOptions = new DefaultAzureCredentialOptions
-            {
-                VisualStudioTenantId = tenantId
-            };
-
-            _cosmosClient = new CosmosClient(accountEndpoint, new DefaultAzureCredential(credentialOptions));
+            _cosmosClient = new CosmosClient(accountEndpoint, new DefaultAzureCredential());
             _container = _cosmosClient.GetContainer("Weather", "Summaries");
 
             _logger.LogInformation(eventId, "Started service successfully");
