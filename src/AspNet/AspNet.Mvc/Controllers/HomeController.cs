@@ -3,13 +3,12 @@ using AspNet.Mvc.Models;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
 using System.Diagnostics;
 
 namespace AspNet.Mvc.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class HomeController : Controller
     {
         readonly IPreviewService _previewService;
@@ -27,7 +26,7 @@ namespace AspNet.Mvc.Controllers
             _logger = logger;
         }
 
-        [AuthorizeForScopes(ScopeKeySection = "DownstreamApi:Scopes")]
+        //[AuthorizeForScopes(ScopeKeySection = "DownstreamApi:Scopes")]
         public IActionResult Index()
         {
             var methodName = nameof(Index);
