@@ -53,17 +53,17 @@ namespace AspNet.Mvc
                 });
             }
 
-            var entraIdClientSecret = builder.Configuration["KeyVault:EntraIdClientSecret"];
+            //var entraIdClientSecret = builder.Configuration["KeyVault:EntraIdClientSecret"];
 
-            if (!string.IsNullOrWhiteSpace(entraIdClientSecret))
-            {
-                builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-                    .AddMicrosoftIdentityWebApp(options =>
-                    {
-                        builder.Configuration.Bind("AzureAd", options);
-                        options.ClientSecret = entraIdClientSecret;
-                    });
-            }
+            //if (!string.IsNullOrWhiteSpace(entraIdClientSecret))
+            //{
+            //    builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+            //        .AddMicrosoftIdentityWebApp(options =>
+            //        {
+            //            builder.Configuration.Bind("AzureAd", options);
+            //            options.ClientSecret = entraIdClientSecret;
+            //        });
+            //}
 
             bool isPreviewEnabled = builder.Configuration.GetValue<bool>("IsPreviewEnabled");
             builder.Services.AddSingleton<IPreviewService>(sp => new PreviewService(isPreviewEnabled));
@@ -75,8 +75,8 @@ namespace AspNet.Mvc
                 //    .Build();
                 //options.Filters.Add(new AuthorizeFilter(policy));
             });
-            builder.Services.AddRazorPages()
-                .AddMicrosoftIdentityUI();
+            builder.Services.AddRazorPages();
+                //.AddMicrosoftIdentityUI();
         }
 
         private static void ConfigureApp(WebApplication app)
@@ -92,7 +92,7 @@ namespace AspNet.Mvc
             app.UseHttpsRedirection();
             app.UseRouting();
 
-            app.UseAuthentication();
+            //app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();
@@ -108,7 +108,7 @@ namespace AspNet.Mvc
         {
             var keyVaultUrl = configuration["KeyVault:Url"];
 
-            if (string.IsNullOrEmpty(keyVaultUrl))
+            if (string.IsNullOrWhiteSpace(keyVaultUrl))
             {
                 return null;
             }
