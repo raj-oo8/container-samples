@@ -1,0 +1,22 @@
+services:
+  grpc.api:
+    image: ${DOCKER_REGISTRY-}grpcapi
+    build:
+      context: .
+      dockerfile: AspNet/AspNet.Grpc.Api/Dockerfile
+    ports:
+      - "5001:5001"
+    environment:
+      - Kestrel__EndpointDefaults__Protocols=Http2
+
+  aspnet.mvc:
+    image: ${DOCKER_REGISTRY-}aspnetmvc
+    build:
+      context: .
+      dockerfile: AspNet/AspNet.Mvc/Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - DownstreamApi__BaseUrl=http://grpc.api:5001
+    depends_on:
+      - grpc.api

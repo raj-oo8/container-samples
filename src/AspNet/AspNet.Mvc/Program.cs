@@ -43,15 +43,15 @@ namespace AspNet.Mvc
         {
             builder.Configuration.AddEnvironmentVariables();
 
-            var appInsightsConnectionString = builder.Configuration["KeyVault:AppInsightsConnectionString"];
+            //var appInsightsConnectionString = builder.Configuration["KeyVault:AppInsightsConnectionString"];
 
-            if (!string.IsNullOrWhiteSpace(appInsightsConnectionString))
-            {
-                var clientSecret = await GetClientSecretFromKeyVaultAsync(builder.Configuration, appInsightsConnectionString);
-                builder.Services.AddOpenTelemetry().UseAzureMonitor(options => {
-                    options.ConnectionString = clientSecret;
-                });
-            }
+            //if (!string.IsNullOrWhiteSpace(appInsightsConnectionString))
+            //{
+            //    var clientSecret = await GetClientSecretFromKeyVaultAsync(builder.Configuration, appInsightsConnectionString);
+            //    builder.Services.AddOpenTelemetry().UseAzureMonitor(options => {
+            //        options.ConnectionString = clientSecret;
+            //    });
+            //}
 
             //var entraIdClientSecret = builder.Configuration["KeyVault:EntraIdClientSecret"];
 

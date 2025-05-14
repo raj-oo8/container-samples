@@ -6,14 +6,28 @@ USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
-ENV DownstreamApi__BaseUrl="http://grpc.api:5001"
+
+ENV AzureAd__Instance="https://login.microsoftonline.com/"
+ENV AzureAd__Domain=""
+ENV AzureAd__TenantId=""
+ENV AzureAd__ClientId=""
+ENV AzureAd__CallbackPath="/signin-oidc"
+ENV AzureAd__ClientSecret=""
+ENV Logging__LogLevel__Default="Information"
+ENV Logging__LogLevel__Microsoft_AspNetCore="Warning"
+ENV AllowedHosts="*"
+ENV DownstreamApi__BaseUrl="https://host.docker.internal:32771"
+ENV DownstreamApi__Scopes__0=""
+ENV IsPreviewEnabled=false
+ENV KeyVault__AppInsightsConnectionString=""
+ENV KeyVault__EntraIdClientSecret=""
+ENV KeyVault__Url=""
 
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["AspNet/AspNet.Mvc/AspNet.Mvc.csproj", "AspNet/AspNet.Mvc/"]
-COPY ["AspNet/AspNet.Library/AspNet.Library.csproj", "AspNet/AspNet.Library/"]
 RUN dotnet restore "./AspNet/AspNet.Mvc/AspNet.Mvc.csproj"
 COPY . .
 WORKDIR "/src/AspNet/AspNet.Mvc"
