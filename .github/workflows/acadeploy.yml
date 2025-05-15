@@ -55,4 +55,4 @@ jobs:
 
       - name: Deploy Application
         working-directory: ./src/Aspire/Aspire.AppHost
-        run: azd deploy --environment ${{ env.AZURE_ENV_NAME }} --no-prompt
+        run: azd deploy --environment ${{ env.AZURE_ENV_NAME }} --all --no-prompt
