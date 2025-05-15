@@ -7,8 +7,4 @@
     <UserSecretsId>62efd59f-e9eb-4d18-938f-48889ca399eb</UserSecretsId>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Aspire.ServiceDefaults\Aspire.ServiceDefaults.csproj" />
-  </ItemGroup>
-
 </Project>
