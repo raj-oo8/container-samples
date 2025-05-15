@@ -1,10 +1,8 @@
 using AspNet.Library.Protos;
 using AspNet.Mvc.Models;
 using Grpc.Net.Client;
-using Grpc.Net.Client.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web;
 using System.Diagnostics;
 
 namespace AspNet.Mvc.Controllers
