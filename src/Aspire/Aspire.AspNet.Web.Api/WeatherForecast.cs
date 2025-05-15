@@ -1,4 +1,4 @@
-namespace WebApi;
+namespace Aspire.AspNet.Web.Api;
 
 public class WeatherForecast
 {

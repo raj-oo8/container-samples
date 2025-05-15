@@ -1,12 +1,12 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.Models;
+using Aspire.AspNet.Mvc.Models;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Abstractions;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
-namespace WebApp.Controllers;
+namespace Aspire.AspNet.Mvc.Controllers;
 
 [Authorize]
 public class HomeController : Controller

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 
-namespace WebApi;
+namespace Aspire.AspNet.Web.Api;
 
 public class Program
 {

@@ -1,4 +1,4 @@
-namespace WebApp.Models;
+namespace Aspire.AspNet.Mvc.Models;
 
 public class ErrorViewModel
 {

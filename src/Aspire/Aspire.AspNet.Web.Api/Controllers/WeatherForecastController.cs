@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
 
-namespace WebApi.Controllers;
+namespace Aspire.AspNet.Web.Api.Controllers;
 
 [Authorize]
 [ApiController]

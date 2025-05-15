@@ -1,4 +1,4 @@
-namespace WebApp.ViewModels;
+namespace Aspire.AspNet.Mvc.Models;
 
 public class WeatherForecastViewModel
 {

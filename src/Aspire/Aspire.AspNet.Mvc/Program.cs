@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
 
-namespace WebApp;
+namespace Aspire.AspNet.Mvc;
 
 public class Program
 {
