@@ -29,7 +29,7 @@ public class HomeController : Controller
             using var response = await _downstreamApi.CallApiForUserAsync("DownstreamApi").ConfigureAwait(false);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                var forecasts = await response.Content.ReadFromJsonAsync<List<WebApp.ViewModels.WeatherForecastViewModel>>().ConfigureAwait(false);
+                var forecasts = await response.Content.ReadFromJsonAsync<List<WeatherForecastViewModel>>().ConfigureAwait(false);
                 return View(forecasts);
             }
             else
