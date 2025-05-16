@@ -18,7 +18,7 @@ public class Program
             .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"))
             .EnableTokenAcquisitionToCallDownstreamApi()
             .AddDownstreamApi("DownstreamApi", builder.Configuration.GetSection("DownstreamApi"))
-            .AddInMemoryTokenCaches();
+            .AddDistributedTokenCaches();
 
         if (builder.Environment.IsDevelopment())
         {
