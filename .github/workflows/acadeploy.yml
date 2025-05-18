@@ -92,4 +92,4 @@ jobs:
           redirect_uri="https://${{ steps.get_app_url.outputs.fqdn }}/signin-oidc"
           az ad app update \
             --id ${{ secrets.AZUREAD_APP_ID }} \
-            --add web.redirectUris $redirect_uri
+            --set "web.redirectUris=[${redirect_uri}]"
