@@ -9,6 +9,8 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         builder.AddServiceDefaults();
+        // Add services to the container.
+        builder.Services.AddProblemDetails();
 
         // Add services to the container.
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -20,6 +22,9 @@ public class Program
 
         var app = builder.Build();
 
+        // Configure the HTTP request pipeline.
+        app.UseExceptionHandler();
+
         app.MapDefaultEndpoints();
 
         // Configure the HTTP request pipeline.
@@ -29,6 +34,7 @@ public class Program
         }
 
         app.UseHttpsRedirection();
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllers();
