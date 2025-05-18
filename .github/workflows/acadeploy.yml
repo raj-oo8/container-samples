@@ -76,3 +76,21 @@ jobs:
             --name ${{ env.ACA_APP_NAME }} \
             --resource-group ${{ env.ACA_RESOURCE_GROUP }} \
             --set-env-vars AzureAd__ClientSecret=secretref:azuread-clientsecret
+
+      - name: Get webfrontend App URL
+        id: get_app_url
+        run: |
+          fqdn=$(az containerapp show \
+            --name ${{ env.ACA_APP_NAME }} \
+            --resource-group ${{ env.ACA_RESOURCE_GROUP }} \
+            --query properties.configuration.ingress.fqdn \
+            -o tsv)
+          echo "fqdn=$fqdn" >> $GITHUB_OUTPUT
+
+      - name: Add App URL to Entra ID App Registration Redirect URIs
+        run: |
+          fqdn="${{ steps.get_app_url.outputs.fqdn }}"
+          redirect_uri="https://$fqdn/signin-oidc"
+          az ad app update \
+            --id ${{ secrets.AZUREAD_APP_ID }} \
+            --add web.redirectUris $redirect_uri
