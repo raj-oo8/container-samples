@@ -16,6 +16,9 @@ jobs:
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+      ACA_APP_NAME: ""
+      ACA_RESOURCE_GROUP: ""
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -53,9 +56,28 @@ jobs:
         working-directory: ./src/Aspire/Aspire.AppHost
         run: azd provision --environment ${{ env.AZURE_ENV_NAME }} --no-prompt
 
-      - name: Set Azure AD Client Secret in azd environment
+      - name: Extract ACA App Name and Resource Group
+        id: extract-aca-vars
         working-directory: ./src/Aspire/Aspire.AppHost
-        run: azd env set-secret AzureAd__ClientSecret "${{ secrets.AZUREAD_CLIENT_SECRET }}"
+        run: |
+          azd env get-values --environment ${{ env.AZURE_ENV_NAME }} > .env.tmp
+          source .env.tmp
+          echo "ACA_APP_NAME=$CONTAINERAPPS_NAME" >> $GITHUB_ENV
+          echo "ACA_RESOURCE_GROUP=$RESOURCE_GROUP" >> $GITHUB_ENV
+
+      - name: Set ACA Secret from GitHub Secret
+        run: |
+          az containerapp secret set \
+            --name ${{ env.ACA_APP_NAME }} \
+            --resource-group ${{ env.ACA_RESOURCE_GROUP }} \
+            --secrets AzureAd__ClientSecret=${{ secrets.AZUREAD_CLIENT_SECRET }}
+
+      - name: Map ACA Secret to Environment Variable
+        run: |
+          az containerapp update \
+            --name ${{ env.ACA_APP_NAME }} \
+            --resource-group ${{ env.ACA_RESOURCE_GROUP }} \
+            --set-env-vars AzureAd__ClientSecret=secretref:AzureAd__ClientSecret
 
       - name: Deploy Application
         working-directory: ./src/Aspire/Aspire.AppHost
