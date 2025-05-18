@@ -49,13 +49,13 @@ jobs:
           azd config set defaults.subscription ${{ env.AZURE_SUBSCRIPTION_ID }}
           azd config set defaults.location ${{ env.AZURE_LOCATION }}
 
-      - name: Set AzureAd__ClientSecret in azd environment
-        working-directory: ./src/Aspire/Aspire.AppHost
-        run: azd env set-secret AzureAd__ClientSecret "${{ secrets.AZUREAD_CLIENT_SECRET }}"
-
       - name: Provision Infrastructure
         working-directory: ./src/Aspire/Aspire.AppHost
         run: azd provision --environment ${{ env.AZURE_ENV_NAME }} --no-prompt
+
+      - name: Set Azure AD Client Secret in azd environment
+        working-directory: ./src/Aspire/Aspire.AppHost
+        run: azd env set-secret AzureAd__ClientSecret "${{ secrets.AZUREAD_CLIENT_SECRET }}"
 
       - name: Deploy Application
         working-directory: ./src/Aspire/Aspire.AppHost
