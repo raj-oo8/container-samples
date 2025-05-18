@@ -13,11 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
-      AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
-      ACA_APP_NAME: ""
-      ACA_RESOURCE_GROUP: ""
+      ACA_APP_NAME: 'webfrontend'
+      ACA_RESOURCE_GROUP: 'rg-${{ vars.AZURE_ENV_NAME }}'
 
     steps:
       - name: Checkout code
@@ -49,21 +46,12 @@ jobs:
       - name: Set Subscription ID and Location
         working-directory: ./src/Aspire/Aspire.AppHost
         run: |
-          azd config set defaults.subscription ${{ env.AZURE_SUBSCRIPTION_ID }}
-          azd config set defaults.location ${{ env.AZURE_LOCATION }}
+          azd config set defaults.subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          azd config set defaults.location ${{ vars.AZURE_LOCATION }}
 
       - name: Provision Infrastructure
         working-directory: ./src/Aspire/Aspire.AppHost
-        run: azd provision --environment ${{ env.AZURE_ENV_NAME }} --no-prompt
-
-      - name: Extract ACA App Name and Resource Group
-        id: extract-aca-vars
-        working-directory: ./src/Aspire/Aspire.AppHost
-        run: |
-          azd env get-values --environment ${{ env.AZURE_ENV_NAME }} > .env.tmp
-          source .env.tmp
-          echo "ACA_APP_NAME=$CONTAINERAPPS_NAME" >> $GITHUB_ENV
-          echo "ACA_RESOURCE_GROUP=$RESOURCE_GROUP" >> $GITHUB_ENV
+        run: azd provision --environment ${{ vars.AZURE_ENV_NAME }} --no-prompt
 
       - name: Set ACA Secret from GitHub Secret
         run: |
@@ -81,4 +69,4 @@ jobs:
 
       - name: Deploy Application
         working-directory: ./src/Aspire/Aspire.AppHost
-        run: azd deploy --environment ${{ env.AZURE_ENV_NAME }} --all --no-prompt
+        run: azd deploy --environment ${{ vars.AZURE_ENV_NAME }} --all --no-prompt
