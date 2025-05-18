@@ -53,6 +53,10 @@ jobs:
         working-directory: ./src/Aspire/Aspire.AppHost
         run: azd provision --environment ${{ vars.AZURE_ENV_NAME }} --no-prompt
 
+      - name: Deploy Application
+        working-directory: ./src/Aspire/Aspire.AppHost
+        run: azd deploy --environment ${{ vars.AZURE_ENV_NAME }} --all --no-prompt
+
       # Login to Azure
       - name: Login to Azure
         uses: azure/login@v2
@@ -72,7 +76,3 @@ jobs:
             --name ${{ env.ACA_APP_NAME }} \
             --resource-group ${{ env.ACA_RESOURCE_GROUP }} \
             --set-env-vars AzureAd__ClientSecret=secretref:azuread-clientsecret
-
-      - name: Deploy Application
-        working-directory: ./src/Aspire/Aspire.AppHost
-        run: azd deploy --environment ${{ vars.AZURE_ENV_NAME }} --all --no-prompt
