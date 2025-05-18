@@ -64,14 +64,14 @@ jobs:
           az containerapp secret set \
             --name ${{ env.ACA_APP_NAME }} \
             --resource-group ${{ env.ACA_RESOURCE_GROUP }} \
-            --secrets AzureAd__ClientSecret=${{ secrets.AZUREAD_CLIENT_SECRET }}
+            --secrets azuread-clientsecret=${{ secrets.AZUREAD_CLIENT_SECRET }}
 
       - name: Map ACA Secret to Environment Variable
         run: |
           az containerapp update \
             --name ${{ env.ACA_APP_NAME }} \
             --resource-group ${{ env.ACA_RESOURCE_GROUP }} \
-            --set-env-vars AzureAd__ClientSecret=secretref:AzureAd__ClientSecret
+            --set-env-vars AzureAd__ClientSecret=secretref:azuread-clientsecret
 
       - name: Deploy Application
         working-directory: ./src/Aspire/Aspire.AppHost
