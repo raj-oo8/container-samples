@@ -53,6 +53,12 @@ jobs:
         working-directory: ./src/Aspire/Aspire.AppHost
         run: azd provision --environment ${{ vars.AZURE_ENV_NAME }} --no-prompt
 
+      # Login to Azure
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
       - name: Set ACA Secret from GitHub Secret
         run: |
           az containerapp secret set \
