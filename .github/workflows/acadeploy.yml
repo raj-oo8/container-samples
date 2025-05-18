@@ -89,8 +89,7 @@ jobs:
 
       - name: Add App URL to Entra ID App Registration Redirect URIs
         run: |
-          fqdn="${{ steps.get_app_url.outputs.fqdn }}"
-          redirect_uri="https://$fqdn/signin-oidc"
+          redirect_uri="https://${{ steps.get_app_url.outputs.fqdn }}/signin-oidc"
           az ad app update \
             --id ${{ secrets.AZUREAD_APP_ID }} \
             --add web.redirectUris $redirect_uri
