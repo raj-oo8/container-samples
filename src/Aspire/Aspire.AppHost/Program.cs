@@ -1,9 +1,11 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var apiService = builder.AddProject<Projects.Aspire_ApiService>("apiservice");
+var apiService = builder.AddProject<Projects.Aspire_AspNet_Web_Api>("apiservice");
 
-builder.AddProject<Projects.Aspire_Web>("webfrontend")
+builder.AddProject<Projects.Aspire_AspNet_Mvc>("webfrontend")
     .WithExternalHttpEndpoints()
-    .WithReference(apiService);
+    .WithReference(apiService)
+    .WaitFor(apiService);
+    //.WithEnvironment("AzureAd__ClientSecret", "");
 
 builder.Build().Run();

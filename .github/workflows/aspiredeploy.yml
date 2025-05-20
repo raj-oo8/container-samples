@@ -1,0 +1,149 @@
+name: Deploy Aspire to ACA
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  # Job: Build and deploy the Aspire app to Azure Container Apps
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    env:
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      ACA_RESOURCE_GROUP: 'rg-${{ vars.AZURE_ENV_NAME }}'
+    steps:
+      # Checkout repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Install .NET 9 SDK
+      - name: Install .NET SDK 9.0.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      # Install Azure Developer CLI (azd)
+      - name: Install azd
+        uses: Azure/setup-azd@v2
+
+      # Install .NET Aspire workload
+      - name: Install .NET Aspire workload
+        run: dotnet workload install aspire
+
+      # Authenticate to Azure using client credentials
+      - name: Log in with Azure (Client Credentials)
+        if: ${{ env.AZURE_CREDENTIALS != '' }}
+        run: |
+          $info = $Env:AZURE_CREDENTIALS | ConvertFrom-Json -AsHashtable;
+          Write-Host "::add-mask::$($info.clientSecret)"
+          azd auth login `
+            --client-id "$($info.clientId)" `
+            --client-secret "$($info.clientSecret)" `
+            --tenant-id "$($info.tenantId)"
+        shell: pwsh
+
+      # Set Azure subscription and location for azd
+      - name: Set Subscription ID and Location
+        working-directory: ./src/Aspire/Aspire.AppHost
+        run: |
+          azd config set defaults.subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          azd config set defaults.location ${{ vars.AZURE_LOCATION }}
+
+      # Provision infrastructure using azd
+      - name: Provision Infrastructure
+        working-directory: ./src/Aspire/Aspire.AppHost
+        run: azd provision --environment ${{ vars.AZURE_ENV_NAME }} --no-prompt
+
+      # Deploy application to Azure Container Apps
+      - name: Deploy Application
+        working-directory: ./src/Aspire/Aspire.AppHost
+        run: azd deploy --environment ${{ vars.AZURE_ENV_NAME }} --all --no-prompt
+
+  # Job: Post-deployment configuration (secrets, env vars, redirect URIs)
+  post-deploy-config:
+    name: Post Deploy Config
+    runs-on: ubuntu-latest
+    needs: build-and-deploy
+    env:
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      ACA_WEBAPP_NAME: 'webfrontend'
+      ACA_APIAPP_NAME: 'apiservice'
+      ACA_RESOURCE_GROUP: 'rg-${{ vars.AZURE_ENV_NAME }}'
+    steps:
+      # Login to Azure for CLI commands
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Set ACA secret from GitHub secret
+      - name: Set ACA Secret from GitHub Secret
+        run: |
+          az containerapp secret set \
+            --name ${{ env.ACA_WEBAPP_NAME }} \
+            --resource-group ${{ env.ACA_RESOURCE_GROUP }} \
+            --secrets azuread-clientsecret=${{ secrets.AZUREAD_CLIENT_SECRET }}
+
+      # Map ACA secret and set environment variables in the container web app
+      - name: Set ACA Environment Variables
+        run: |
+          az containerapp update \
+            --name ${{ env.ACA_WEBAPP_NAME }} \
+            --resource-group ${{ env.ACA_RESOURCE_GROUP }} \
+            --set-env-vars \
+              AzureAd__ClientSecret=secretref:azuread-clientsecret \
+              AzureAd__Domain=${{ secrets.AZUREAD_DOMAIN }} \
+              AzureAd__TenantId=${{ secrets.AZUREAD_TENANT_ID }} \
+              AzureAd__ClientId=${{ secrets.AZUREAD_APP_ID }} \
+              DownstreamApi__Scopes=${{ secrets.AZUREAD_DOWNSTREAM_SCOPES }}
+
+      # Set environment variables in the container api app
+      - name: Set ACA Environment Variables
+        run: |
+          az containerapp update \
+            --name ${{ env.ACA_APIAPP_NAME }} \
+            --resource-group ${{ env.ACA_RESOURCE_GROUP }} \
+            --set-env-vars \
+              AzureAd__Domain=${{ secrets.AZUREAD_DOMAIN }} \
+              AzureAd__TenantId=${{ secrets.AZUREAD_TENANT_ID }} \
+              AzureAd__ClientId=${{ secrets.AZUREAD_APIAPP_ID }}
+
+      # Get the FQDN (URL) of the deployed webfrontend app
+      - name: Get webfrontend App URL
+        id: get_app_url
+        run: |
+          fqdn=$(az containerapp show \
+            --name ${{ env.ACA_WEBAPP_NAME }} \
+            --resource-group ${{ env.ACA_RESOURCE_GROUP }} \
+            --query properties.configuration.ingress.fqdn \
+            -o tsv)
+          echo "fqdn=$fqdn" >> $GITHUB_OUTPUT
+
+      # Add the app URL as a redirect URI to the Entra ID app registration
+      - name: Add App URL to Entra ID App Registration Redirect URIs
+        run: |
+          redirect_uri="https://${{ steps.get_app_url.outputs.fqdn }}/signin-oidc"
+          # Get current URIs, filter out empty lines
+          current_uris=$(az ad app show --id ${{ secrets.AZUREAD_APP_ID }} --query "web.redirectUris" -o tsv | grep -v '^$')
+          # Check if redirect_uri already exists
+          found=0
+          for uri in $current_uris; do
+            if [ "$uri" = "$redirect_uri" ]; then
+              found=1
+              break
+            fi
+          done
+          all_uris=()
+          for uri in $current_uris; do
+            all_uris+=("$uri")
+          done
+          if [ $found -eq 0 ]; then
+            all_uris+=("$redirect_uri")
+          fi
+          az ad app update \
+            --id ${{ secrets.AZUREAD_APP_ID }} \
+            --web-redirect-uris "${all_uris[@]}"
