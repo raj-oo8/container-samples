@@ -25,13 +25,13 @@ public class Program
         // Configure the HTTP request pipeline.
         app.UseExceptionHandler();
 
-        app.MapDefaultEndpoints();
-
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
         }
+
+        app.MapDefaultEndpoints();
 
         app.UseHttpsRedirection();
         app.UseAuthentication();

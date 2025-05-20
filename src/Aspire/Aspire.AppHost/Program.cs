@@ -5,7 +5,7 @@ var apiService = builder.AddProject<Projects.Aspire_AspNet_Web_Api>("apiservice"
 builder.AddProject<Projects.Aspire_AspNet_Mvc>("webfrontend")
     .WithExternalHttpEndpoints()
     .WithReference(apiService)
-    .WaitFor(apiService)
-    .WithEnvironment("AzureAd__ClientSecret", "");
+    .WaitFor(apiService);
+    //.WithEnvironment("AzureAd__ClientSecret", "");
 
 builder.Build().Run();

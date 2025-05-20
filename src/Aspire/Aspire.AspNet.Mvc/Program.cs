@@ -17,6 +17,16 @@ public class Program
 
         builder.AddServiceDefaults();
 
+        builder.Services.AddControllersWithViews(options =>
+        {
+            var policy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build();
+            options.Filters.Add(new AuthorizeFilter(policy));
+        });
+        builder.Services.AddRazorPages()
+            .AddMicrosoftIdentityUI();
+
         builder.Services.AddOutputCache();
 
         // Add services to the container.
@@ -37,16 +47,6 @@ public class Program
                 };
             });
         }
-
-        builder.Services.AddControllersWithViews(options =>
-        {
-            var policy = new AuthorizationPolicyBuilder()
-                .RequireAuthenticatedUser()
-                .Build();
-            options.Filters.Add(new AuthorizeFilter(policy));
-        });
-        builder.Services.AddRazorPages()
-            .AddMicrosoftIdentityUI();
 
         var app = builder.Build();
 

@@ -26,7 +26,10 @@ public class HomeController : Controller
     {
         try
         {
-            using var response = await _downstreamApi.CallApiForUserAsync("DownstreamApi").ConfigureAwait(false);
+            using var response = await _downstreamApi.CallApiForUserAsync(
+                "DownstreamApi",
+                options => options.RelativePath = "weatherforecast"
+                ).ConfigureAwait(false);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 var forecasts = await response.Content.ReadFromJsonAsync<List<WeatherForecastViewModel>>().ConfigureAwait(false);
