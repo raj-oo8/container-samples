@@ -12,6 +12,9 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        // Add this to ensure user secrets are loaded (after appsettings, before env vars)
+        builder.Configuration.AddUserSecrets<Program>(optional: true);
+
         // Add this to ensure environment variables (including ACA secrets) are loaded into configuration
         builder.Configuration.AddEnvironmentVariables();
 
