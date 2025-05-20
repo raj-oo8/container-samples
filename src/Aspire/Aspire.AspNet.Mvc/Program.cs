@@ -63,6 +63,8 @@ public class Program
         app.UseHttpsRedirection();
         app.UseRouting();
 
+        // Ensure authentication is added before authorization
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapStaticAssets();
