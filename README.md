@@ -8,8 +8,9 @@ This repository contains sample projects covering various topics to demonstrate 
 
 - .NET Aspire
 - Azure Container Apps (ACA)
-- Bicep
-- Azure Command Line Interface (CLI)
+- Entra ID
+- JWT (JSON Web Token) Bearer Authentication
+- OpenID Connect (OIDC)
 
 ### Web Development
 
