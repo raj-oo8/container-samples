@@ -13,23 +13,37 @@ public class HomeController : Controller
 {
     private readonly IDownstreamApi _downstreamApi;
     private readonly ILogger<HomeController> _logger;
+    private readonly IConfiguration _configuration;
 
-    public HomeController(ILogger<HomeController> logger, IDownstreamApi downstreamApi)
+    public HomeController(ILogger<HomeController> logger, IDownstreamApi downstreamApi, IConfiguration configuration)
     {
         _logger = logger;
-        _downstreamApi = downstreamApi; ;
+        _downstreamApi = downstreamApi;
+        _configuration = configuration;
     }
 
-    // filepath: c:\Users\rajo\Source\Repos\TwoTier\WebApp\Controllers\HomeController.cs
-    [AuthorizeForScopes(ScopeKeySection = "DownstreamApi:Scopes")]
     public async Task<IActionResult> Index()
     {
         try
         {
+            // Read ClientId from configuration
+            var clientId = _configuration["AzureAd:ClientId"];
+            var scope = _configuration["DownstreamApi:Scopes"];
+
+            if (string.IsNullOrEmpty(scope))
+            {
+                throw new InvalidOperationException("The scope cannot be null or empty. Please check the configuration.");
+            }
+
             using var response = await _downstreamApi.CallApiForUserAsync(
                 "DownstreamApi",
-                options => options.RelativePath = "weatherforecast"
-                ).ConfigureAwait(false);
+                options =>
+                {
+                    options.Scopes = [scope]; // Ensure scope is not null
+                    options.RelativePath = "weatherforecast";
+                }
+            ).ConfigureAwait(false);
+
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 var forecasts = await response.Content.ReadFromJsonAsync<List<WeatherForecastViewModel>>().ConfigureAwait(false);
