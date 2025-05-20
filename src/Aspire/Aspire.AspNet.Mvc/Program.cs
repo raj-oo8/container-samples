@@ -17,6 +17,8 @@ public class Program
 
         builder.AddServiceDefaults();
 
+        builder.Services.AddOutputCache();
+
         // Add services to the container.
         builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
             .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"))
