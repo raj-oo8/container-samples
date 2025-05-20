@@ -89,7 +89,7 @@ jobs:
             --secrets azuread-clientsecret=${{ secrets.AZUREAD_CLIENT_SECRET }}
 
       # Map ACA secret and set environment variables in the container web app
-      - name: Set ACA Environment Variables
+      - name: Set ACA Environment Variables in the container web app
         run: |
           az containerapp update \
             --name ${{ env.ACA_WEBAPP_NAME }} \
@@ -100,9 +100,9 @@ jobs:
               AzureAd__TenantId=${{ secrets.AZUREAD_TENANT_ID }} \
               AzureAd__ClientId=${{ secrets.AZUREAD_APP_ID }} \
               DownstreamApi__Scopes=${{ secrets.AZUREAD_DOWNSTREAM_SCOPES }}
-
+      
       # Set environment variables in the container api app
-      - name: Set ACA Environment Variables
+      - name: Set ACA Environment Variables in the container api app
         run: |
           az containerapp update \
             --name ${{ env.ACA_APIAPP_NAME }} \
@@ -111,7 +111,7 @@ jobs:
               AzureAd__Domain=${{ secrets.AZUREAD_DOMAIN }} \
               AzureAd__TenantId=${{ secrets.AZUREAD_TENANT_ID }} \
               AzureAd__ClientId=${{ secrets.AZUREAD_APIAPP_ID }}
-
+      
       # Get the FQDN (URL) of the deployed webfrontend app
       - name: Get webfrontend App URL
         id: get_app_url
