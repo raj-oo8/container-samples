@@ -5,10 +5,36 @@ namespace Aspire.AspNet.Web.Api;
 
 public class Program
 {
+    static readonly EventId eventId = new(100, typeof(Program).FullName);
+
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+        ConfigureBuilder(builder);
 
+        var app = builder.Build();
+
+        try
+        {
+            app.Logger.LogInformation(eventId, "Starting api...");
+
+            ConfigureApp(app);
+
+            app.Logger.LogInformation(eventId, "Configured api successfully");
+
+            app.Run();
+
+            app.Logger.LogInformation(eventId, "Started api successfully");
+        }
+        catch (Exception ex)
+        {
+            app.Logger.LogCritical(eventId, ex, "Api failed to start");
+            throw;
+        }
+    }
+
+    private static void ConfigureBuilder(WebApplicationBuilder builder)
+    {
         // Add this to ensure user secrets are loaded (after appsettings, before env vars)
         builder.Configuration.AddUserSecrets<Program>(optional: true);
 
@@ -26,9 +52,10 @@ public class Program
         builder.Services.AddControllers();
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
+    }
 
-        var app = builder.Build();
-
+    private static void ConfigureApp(WebApplication app)
+    {
         // Configure the HTTP request pipeline.
         app.UseExceptionHandler();
 
@@ -45,7 +72,5 @@ public class Program
         app.UseAuthorization();
 
         app.MapControllers();
-
-        app.Run();
     }
 }

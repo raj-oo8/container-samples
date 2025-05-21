@@ -8,14 +8,37 @@ namespace Aspire.AspNet.Mvc;
 
 public class Program
 {
+    static readonly EventId eventId = new(100, typeof(Program).FullName);
+
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+        ConfigureBuilder(builder);
 
-        // Add this to ensure user secrets are loaded (after appsettings, before env vars)
+        var app = builder.Build();
+
+        try
+        {
+            app.Logger.LogInformation(eventId, "Starting app...");
+
+            ConfigureApp(app);
+
+            app.Logger.LogInformation(eventId, "Configured app successfully");
+
+            app.Run();
+
+            app.Logger.LogInformation(eventId, "Started app successfully");
+        }
+        catch (Exception ex)
+        {
+            app.Logger.LogCritical(eventId, ex, "App failed to start");
+            throw;
+        }
+    }
+
+    private static void ConfigureBuilder(WebApplicationBuilder builder)
+    {
         builder.Configuration.AddUserSecrets<Program>(optional: true);
-
-        // Add this to ensure environment variables (including ACA secrets) are loaded into configuration
         builder.Configuration.AddEnvironmentVariables();
 
         builder.AddServiceDefaults();
@@ -32,7 +55,6 @@ public class Program
 
         builder.Services.AddOutputCache();
 
-        // Add services to the container.
         builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
             .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"))
             .EnableTokenAcquisitionToCallDownstreamApi()
@@ -50,23 +72,21 @@ public class Program
                 };
             });
         }
+    }
 
-        var app = builder.Build();
-
+    private static void ConfigureApp(WebApplication app)
+    {
         app.MapDefaultEndpoints();
 
-        // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Home/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
 
         app.UseHttpsRedirection();
         app.UseRouting();
 
-        // Ensure authentication is added before authorization
         app.UseAuthentication();
         app.UseAuthorization();
 
@@ -77,7 +97,5 @@ public class Program
             .WithStaticAssets();
         app.MapRazorPages()
            .WithStaticAssets();
-
-        app.Run();
     }
 }
