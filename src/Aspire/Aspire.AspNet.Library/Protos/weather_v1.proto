@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+option csharp_namespace = "Aspire.AspNet.Library.Protos";
+
+package weather.v1;
+
+import "google/api/annotations.proto";
+
+// The weather forecast service definition.
+service WeatherRpcServiceV1 {
+  // Gets the weather forecast
+  rpc GetWeatherForecast (WeatherForecastRequestV1) returns (WeatherForecastResponseV1){
+	  option (google.api.http) = {
+      get: "/v1/weather/forecast"
+    };
+  }
+}
+
+// The request message for the weather forecast.
+message WeatherForecastRequestV1 {}
+
+// The response message containing the weather forecast.
+message WeatherForecastResponseV1 {
+  repeated WeatherForecastV1 forecasts = 1;
+}
+
+// The weather forecast message.
+message WeatherForecastV1 {
+  string date = 1;
+  int32 temperatureC = 2;
+  string summary = 3;
+}

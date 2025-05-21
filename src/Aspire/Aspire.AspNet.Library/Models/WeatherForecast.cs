@@ -1,6 +1,6 @@
-namespace Aspire.AspNet.Mvc.Models;
+namespace Aspire.AspNet.Library.Models;
 
-public class WeatherForecastViewModel
+public class WeatherForecast
 {
     public DateOnly Date { get; set; }
 

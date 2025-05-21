@@ -5,6 +5,7 @@ using Aspire.AspNet.Mvc.Models;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Abstractions;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Aspire.AspNet.Library.Models;
 
 namespace Aspire.AspNet.Mvc.Controllers;
 
@@ -46,7 +47,7 @@ public class HomeController : Controller
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                var forecasts = await response.Content.ReadFromJsonAsync<List<WeatherForecastViewModel>>().ConfigureAwait(false);
+                var forecasts = await response.Content.ReadFromJsonAsync<List<WeatherForecast>>().ConfigureAwait(false);
                 return View(forecasts);
             }
             else

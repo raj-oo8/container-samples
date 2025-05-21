@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aspire.ServiceDefaults", "A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aspire.AppHost", "Aspire\Aspire.AppHost\Aspire.AppHost.csproj", "{CE67029D-6E33-CB30-4B69-598BDBA178D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aspire.AspNet.Library", "Aspire\Aspire.AspNet.Library\Aspire.AspNet.Library.csproj", "{E0794986-F2F3-4365-512C-DAEA07261FD6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,10 @@ Global
 		{CE67029D-6E33-CB30-4B69-598BDBA178D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE67029D-6E33-CB30-4B69-598BDBA178D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE67029D-6E33-CB30-4B69-598BDBA178D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0794986-F2F3-4365-512C-DAEA07261FD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0794986-F2F3-4365-512C-DAEA07261FD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0794986-F2F3-4365-512C-DAEA07261FD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0794986-F2F3-4365-512C-DAEA07261FD6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
