@@ -11,11 +11,16 @@ This repository contains sample projects covering various topics to demonstrate 
 - Entra ID
 - JWT (JSON Web Token) Bearer Authentication
 - OpenID Connect (OIDC)
+- A/B Testing
+- Canary
+- Blue-Green
 
 ### Web Development
 
 - gRPC (gRPC Remote Procedure Calls)
 - gRPC-Web
+- API Versioning
+- Feature Flags
 - ASP.NET Core MVC (Model View Controller)
 - ASP.NET Core Web API (Application Programming Interface)
 
