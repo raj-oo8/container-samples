@@ -14,13 +14,15 @@ This repository contains sample projects covering various topics to demonstrate 
 - A/B Testing
 - Canary
 - Blue-Green
-- Health Checks
+- Health Probes
 
 ### Web Development
 
 - gRPC (gRPC Remote Procedure Calls)
 - gRPC-Web
 - API Versioning
+- API Scopes
+- Microsoft Identity Web
 - Feature Flags
 - ASP.NET Core MVC (Model View Controller)
 - ASP.NET Core Web API (Application Programming Interface)
