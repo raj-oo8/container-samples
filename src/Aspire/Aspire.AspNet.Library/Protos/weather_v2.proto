@@ -11,7 +11,7 @@ service WeatherRpcServiceV2 {
   // Gets the weather forecast
   rpc GetWeatherForecast (WeatherForecastRequestV2) returns (WeatherForecastResponseV2) {
     option (google.api.http) = {
-      get: "/v2/weather/forecast"
+      get: "/v2/weatherforecast"
     };
   }
 }
@@ -28,7 +28,6 @@ message WeatherForecastResponseV2 {
 message WeatherForecastV2 {
   string date = 1;
   int32 temperatureC = 2;
-  int32 temperatureF = 3;
-  string summary = 4;
-  int32 humidity = 5;
+  string summary = 3;
+  int32 humidity = 4;
 }

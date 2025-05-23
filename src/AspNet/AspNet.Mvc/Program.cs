@@ -62,13 +62,13 @@ namespace AspNet.Mvc
             bool isPreviewEnabled = builder.Configuration.GetValue<bool>("IsPreviewEnabled");
             builder.Services.AddSingleton<IPreviewService>(sp => new PreviewService(isPreviewEnabled));
 
-            builder.Services.AddControllersWithViews(options =>
-            {
-                //var policy = new AuthorizationPolicyBuilder()
-                //    .RequireAuthenticatedUser()
-                //    .Build();
-                //options.Filters.Add(new AuthorizeFilter(policy));
-            });
+            builder.Services.AddControllersWithViews(); //options =>
+            //{
+            //    //var policy = new AuthorizationPolicyBuilder()
+            //    //    .RequireAuthenticatedUser()
+            //    //    .Build();
+            //    //options.Filters.Add(new AuthorizeFilter(policy));
+            //});
             builder.Services.AddRazorPages();
                 //.AddMicrosoftIdentityUI();
         }
@@ -87,7 +87,7 @@ namespace AspNet.Mvc
             app.UseRouting();
 
             //app.UseAuthentication();
-            app.UseAuthorization();
+            //app.UseAuthorization();
 
             app.MapStaticAssets();
             app.MapControllerRoute(

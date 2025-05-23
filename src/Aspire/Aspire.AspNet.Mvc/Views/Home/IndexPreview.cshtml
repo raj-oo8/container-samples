@@ -1,4 +1,4 @@
-@model List<WeatherForecastV1>
+@model List<WeatherForecastV2>
 
 @{
     ViewData["Title"] = "Home Page";
@@ -15,6 +15,7 @@
         <tr>
             <th>Date</th>
             <th>Temperature (C)</th>
+            <th>Humidity</th>
             <th>Summary</th>
         </tr>
     </thead>
@@ -24,6 +25,7 @@
             <tr>
                 <td>@forecast.Date</td>
                 <td>@forecast.TemperatureC</td>
+                <td>@forecast.Humidity</td>
                 <td>@forecast.Summary</td>
             </tr>
         }

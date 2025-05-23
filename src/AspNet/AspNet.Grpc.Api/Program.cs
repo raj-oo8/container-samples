@@ -41,15 +41,15 @@ namespace AspNet.Grpc.Api
         {
             builder.Configuration.AddEnvironmentVariables();
 
-            var appInsightsConnectionString = builder.Configuration["KeyVault:AppInsightsConnectionString"];
+            //var appInsightsConnectionString = builder.Configuration["KeyVault:AppInsightsConnectionString"];
 
-            if (!string.IsNullOrWhiteSpace(appInsightsConnectionString))
-            {
-                var clientSecret = await GetClientSecretFromKeyVaultAsync(builder.Configuration, appInsightsConnectionString);
-                builder.Services.AddOpenTelemetry().UseAzureMonitor(options => {
-                    options.ConnectionString = clientSecret;
-                });
-            }
+            //if (!string.IsNullOrWhiteSpace(appInsightsConnectionString))
+            //{
+            //    var clientSecret = await GetClientSecretFromKeyVaultAsync(builder.Configuration, appInsightsConnectionString);
+            //    builder.Services.AddOpenTelemetry().UseAzureMonitor(options => {
+            //        options.ConnectionString = clientSecret;
+            //    });
+            //}
 
             //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             //    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));

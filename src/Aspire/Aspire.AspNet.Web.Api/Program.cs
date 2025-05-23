@@ -1,3 +1,4 @@
+using Aspire.AspNet.Web.Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 
@@ -46,12 +47,33 @@ public class Program
 
         builder.Services.AddControllers();
         builder.Services.AddOpenApi();
+        builder.Services.AddGrpc().AddJsonTranscoding();
+        builder.Services.AddGrpcReflection();
+
+        builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder =>
+        {
+            builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding");
+        }));
     }
 
     private static void ConfigureApp(WebApplication app)
     {
-        app.UseExceptionHandler();
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+        }
+        else
+        {
+            app.UseExceptionHandler();
+            app.UseHsts();
+        }
+
         app.MapOpenApi();
+        app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
+        app.UseCors();
 
         app.MapDefaultEndpoints();
 
@@ -60,5 +82,14 @@ public class Program
         app.UseAuthorization();
 
         app.MapControllers();
+        app.MapGrpcService<WeatherServiceV1>().RequireCors("AllowAll");
+        app.MapGrpcService<WeatherServiceV2>().RequireCors("AllowAll");
+
+        if (app.Environment.IsDevelopment())
+        {
+            app.MapGrpcReflectionService();
+        }
+
+        app.MapGet("/", () => "This gRPC service is gRPC-Web enabled and is callable from browser apps using the gRPC-Web protocol");
     }
 }

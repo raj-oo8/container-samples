@@ -13,20 +13,5 @@
         "DebugTarget": "https"
       }
     ]
-  },
-  {
-    "Name": "AspNet (Docker)",
-    "Projects": [
-      {
-        "Path": "AspNet\\AspNet.Mvc\\AspNet.Mvc.csproj",
-        "Action": "Start",
-        "DebugTarget": "Container (Dockerfile)"
-      },
-      {
-        "Path": "AspNet\\AspNet.Grpc.Api\\AspNet.Grpc.Api.csproj",
-        "Action": "Start",
-        "DebugTarget": "Container (Dockerfile)"
-      }
-    ]
   }
 ]

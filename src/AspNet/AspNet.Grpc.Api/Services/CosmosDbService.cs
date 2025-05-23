@@ -32,8 +32,8 @@ namespace AspNet.Grpc.Api.Services
                 return;
             }
 
-            _cosmosClient = new CosmosClient(accountEndpoint, new DefaultAzureCredential());
-            _container = _cosmosClient.GetContainer("Weather", "Summaries");
+            //_cosmosClient = new CosmosClient(accountEndpoint, new DefaultAzureCredential());
+            //_container = _cosmosClient.GetContainer("Weather", "Summaries");
 
             _logger.LogInformation(eventId, "Started service successfully");
         }
