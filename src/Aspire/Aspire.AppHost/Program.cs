@@ -6,6 +6,5 @@ builder.AddProject<Projects.Aspire_AspNet_Mvc>("webfrontend")
     .WithExternalHttpEndpoints()
     .WithReference(apiService)
     .WaitFor(apiService);
-    //.WithEnvironment("AzureAd__ClientSecret", "");
 
 builder.Build().Run();

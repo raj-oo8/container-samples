@@ -2,7 +2,8 @@ using Aspire.AspNet.Library.Models;
 using Aspire.AspNet.Library.Protos;
 using Aspire.AspNet.Mvc.Models;
 using Google.Protobuf;
-using Grpc.Net.Client.Configuration;
+using Grpc.Core;
+using Grpc.Net.Client;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
@@ -32,27 +33,44 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
+        var scope = _configuration["DownstreamApi:Scopes"];
+        var baseUrl = _configuration["DownstreamApi:BaseUrl"];
         try
         {
-            var scope = _configuration["DownstreamApi:Scopes"];
+            var isPreviewEnabled = _configuration["IsPreviewEnabled"];
 
-            if (string.IsNullOrWhiteSpace(scope))
+            if (bool.Parse(isPreviewEnabled))
             {
-                throw new InvalidOperationException("The scope cannot be null or empty. Please check the configuration.");
+                var forecasts = await GetWeatherForecastV2Async(scope);
+                return View("IndexPreview", forecasts);
             }
-
-            var forecasts = await GetWeatherForecastV1Async(scope);
-            return View(forecasts);
+            else
+            {
+                var forecasts = await GetWeatherForecastV1Async(scope);
+                var weatherForecasts = forecasts.Select(f => new WeatherForecast
+                {
+                    Date = DateOnly.Parse(f.Date),
+                    TemperatureC = f.TemperatureC,
+                    Summary = f.Summary
+                }).ToList();
+                return View(weatherForecasts);
+            }
         }
         catch (MsalUiRequiredException ex)
         {
-            _logger.LogError(ex, "Token acquisition failed. Redirecting to login.");
+            _logger.LogError(eventId, ex, $"Error in {nameof(Index)}: {ex.Message}");
             return Challenge(OpenIdConnectDefaults.AuthenticationScheme);
         }
         catch (MicrosoftIdentityWebChallengeUserException ex)
         {
-            _logger.LogError(ex, "User challenge required. Redirecting to login.");
+            _logger.LogError(eventId, ex, $"Error in {nameof(Index)}: {ex.Message}");
             return Challenge(OpenIdConnectDefaults.AuthenticationScheme);
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError(eventId, ex, $"Error in {nameof(Index)}: {ex.Message}");
+            var forecasts = await GetWeatherForecastAsync(scope);
+            return View(forecasts);
         }
     }
 
@@ -98,7 +116,7 @@ public class HomeController : Controller
             var parser = new JsonParser(JsonParser.Settings.Default.WithIgnoreUnknownFields(true));
             var result = parser.Parse<WeatherForecastResponseV1>(json);
 
-            if (result?.Forecasts != null)
+            if (result.Forecasts != null)
             {
                 forecasts.AddRange(result.Forecasts);
             }
@@ -107,6 +125,71 @@ public class HomeController : Controller
         {
             var error = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             _logger.LogError(eventId, error, $"Error in {nameof(GetWeatherForecastV1Async)}: {response.StatusCode}");
+        }
+
+        return forecasts;
+    }
+
+    async Task<List<WeatherForecastV2>> GetWeatherForecastV2Async(string scope)
+    {
+        var forecasts = new List<WeatherForecastV2>();
+
+        using var response = await _downstreamApi.CallApiForUserAsync
+        (
+            "DownstreamApi",
+            options =>
+            {
+                options.Scopes = [scope];
+                options.RelativePath = "v2/weatherforecast";
+            }
+        ).ConfigureAwait(false);
+
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+            var json = await response.Content.ReadAsStringAsync();
+            var parser = new JsonParser(JsonParser.Settings.Default.WithIgnoreUnknownFields(true));
+            var result = parser.Parse<WeatherForecastResponseV2>(json);
+
+            if (result.Forecasts != null)
+            {
+                forecasts.AddRange(result.Forecasts);
+            }
+        }
+        else
+        {
+            var error = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            _logger.LogError(eventId, error, $"Error in {nameof(GetWeatherForecastV2Async)}: {response.StatusCode}");
+        }
+
+        return forecasts;
+    }
+
+    async Task<List<WeatherForecast>> GetWeatherForecastAsync(string scope)
+    {
+        var forecasts = new List<WeatherForecast>();
+
+        using var response = await _downstreamApi.CallApiForUserAsync
+        (
+            "DownstreamApi",
+            options =>
+            {
+                options.Scopes = [scope];
+                options.RelativePath = "weatherforecast";
+            }
+        ).ConfigureAwait(false);
+
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+            var result = await response.Content.ReadFromJsonAsync<List<WeatherForecast>>();
+            if (result != null)
+            {
+                forecasts = result;
+            }
+        }
+        else
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            _logger.LogError(eventId, error, $"Error in {nameof(GetWeatherForecastAsync)}: {response.StatusCode}");
         }
 
         return forecasts;
