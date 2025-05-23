@@ -14,6 +14,7 @@ This repository contains sample projects covering various topics to demonstrate 
 - A/B Testing
 - Canary
 - Blue-Green
+- Health Checks
 
 ### Web Development
 
