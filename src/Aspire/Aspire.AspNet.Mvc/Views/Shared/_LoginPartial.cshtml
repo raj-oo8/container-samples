@@ -1,19 +1,21 @@
-﻿@using System.Security.Principal
-@using System.Security.Claims
+﻿@using System.Security.Principal  
+@using System.Security.Claims  
 
-<ul class="navbar-nav">
-    @if (User.Identity?.IsAuthenticated == true)
-    {
-        var displayName = (User.Identity as ClaimsIdentity)?.FindFirst("name")?.Value ?? User.Identity?.Name;
-        <span class="navbar-text text-body">Hello @displayName!</span>
-        <li class="nav-item">
-            <a class="nav-link text-body" asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignOut">Sign out</a>
-        </li>
-    }
-    else
-    {
-        <li class="nav-item">
-            <a class="nav-link text-body" asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignIn">Sign in</a>
-        </li>
-    }
+<ul>  
+    @if (User.Identity?.IsAuthenticated == true)  
+    {  
+        var displayName = (User.Identity as ClaimsIdentity)?.FindFirst("name")?.Value ?? User.Identity?.Name;  
+        <li>  
+            <span>Hello @displayName!</span>  
+        </li>  
+        <li>  
+            <a asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignOut">Sign out</a>  
+        </li>  
+    }  
+    else  
+    {  
+        <li>  
+            <a asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignIn">Sign in</a>  
+        </li>  
+    }  
 </ul>
