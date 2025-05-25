@@ -1,5 +1,5 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
@@ -92,6 +92,38 @@ public class Program
         app.UseRouting();
 
         app.UseAuthentication();
+
+        app.Use(async (context, next) =>
+        {
+            if (context.User.Identity?.IsAuthenticated == true)
+            {
+                context.Response.Cookies.Append(
+                    "WebAppSession",
+                    "active",
+                    new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.Lax,
+                        Expires = DateTimeOffset.UtcNow.AddHours(1)
+                    });
+            }
+            await next();
+        });
+
+        app.Use(async (context, next) =>
+        {
+            if (context.User.Identity?.IsAuthenticated == true)
+            {
+                if (!context.Request.Cookies.ContainsKey("WebAppSession"))
+                {
+                    context.Response.Redirect("/MicrosoftIdentity/Account/SignOut");
+                    return;
+                }
+            }
+            await next();
+        });
+
         app.UseAuthorization();
 
         app.MapStaticAssets();
