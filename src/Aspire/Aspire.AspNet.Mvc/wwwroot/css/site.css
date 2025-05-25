@@ -1,3 +1,15 @@
-html {
-  
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #181a1b;
+    color: #f3f4f6;
+  }
+  a { color: #8ab4f8; }
+}
+
+@media (prefers-color-scheme: light) {
+  body {
+    background-color: #fff;
+    color: #222;
+  }
+  a { color: #1a0dab; }
 }
