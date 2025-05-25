@@ -1,9 +1,11 @@
 ﻿@using System.Security.Principal
+@using System.Security.Claims
 
 <ul class="navbar-nav">
     @if (User.Identity?.IsAuthenticated == true)
     {
-        <span class="navbar-text text-body">Hello @User.Identity?.Name!</span>
+        var displayName = (User.Identity as ClaimsIdentity)?.FindFirst("name")?.Value ?? User.Identity?.Name;
+        <span class="navbar-text text-body">Hello @displayName!</span>
         <li class="nav-item">
             <a class="nav-link text-body" asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignOut">Sign out</a>
         </li>
