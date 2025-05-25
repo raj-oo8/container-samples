@@ -24,6 +24,7 @@ This repository contains sample projects covering various topics to demonstrate 
 - API Scopes
 - Microsoft Identity Web
 - Feature Flags
+- Rolling Session Timeout
 - ASP.NET Core MVC (Model View Controller)
 - ASP.NET Core Web API (Application Programming Interface)
 
