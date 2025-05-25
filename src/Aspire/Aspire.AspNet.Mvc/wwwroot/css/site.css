@@ -1,31 +1,58 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #181a1b;
+    color: #f3f4f6;
   }
+  a { color: #8ab4f8; }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+@media (prefers-color-scheme: light) {
+  body {
+    background-color: #fff;
+    color: #222;
+  }
+  a { color: #1a0dab; }
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+html, body {
+  margin: 0;
+  padding: 0;
+  text-align: center;
 }
 
-body {
-  margin-bottom: 60px;
+header {
+  padding: 10px;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+nav ul {
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+nav li {
+  margin: 0 1em;
+  padding: 0;
+}
+
+nav > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+main {
+  padding: 5px;
+}
+
+table {
+  width: 100%;
+  padding: 25px;
+}
+
+th, td {
+  padding: 5px;
+  text-align: left;
 }
