@@ -16,7 +16,6 @@ using System.Net;
 
 namespace Aspire.AspNet.Mvc.Controllers;
 
-[Authorize]
 public class HomeController : Controller
 {
     readonly EventId eventId = new(200, typeof(HomeController).FullName);
@@ -31,7 +30,14 @@ public class HomeController : Controller
         _configuration = configuration;
     }
 
-    public async Task<IActionResult> Index()
+    [AllowAnonymous]
+    public IActionResult Index()
+    {
+        return View();
+    }
+
+    [Authorize]
+    public async Task<IActionResult> Weather()
     {
         var scope = _configuration["DownstreamApi:Scopes"];
         var baseUrl = _configuration["DownstreamApi:BaseUrl"];
@@ -42,7 +48,7 @@ public class HomeController : Controller
             if (bool.Parse(isPreviewEnabled))
             {
                 var forecasts = await GetWeatherForecastV2Async(scope);
-                return View("IndexPreview", forecasts);
+                return View("WeatherPreview", forecasts);
             }
             else
             {
@@ -66,17 +72,12 @@ public class HomeController : Controller
             _logger.LogError(eventId, ex, $"Error in {nameof(Index)}: {ex.Message}");
             return Challenge(OpenIdConnectDefaults.AuthenticationScheme);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _logger.LogError(eventId, ex, $"Error in {nameof(Index)}: {ex.Message}");
             var forecasts = await GetWeatherForecastAsync(scope);
             return View(forecasts);
         }
-    }
-
-    public IActionResult Privacy()
-    {
-        return View();
     }
 
     [AllowAnonymous]
