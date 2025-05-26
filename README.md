@@ -11,6 +11,8 @@ This repository contains sample projects covering various topics to demonstrate 
 - Entra ID
 - JWT (JSON Web Token) Bearer Authentication
 - OpenID Connect (OIDC)
+- Authorization Code Flow
+- Client Credentials Flow
 - A/B Testing
 - Canary
 - Blue-Green
@@ -22,6 +24,7 @@ This repository contains sample projects covering various topics to demonstrate 
 - gRPC-Web
 - API Versioning
 - API Scopes
+- App Roles
 - Microsoft Identity Web
 - Feature Flags
 - Rolling Session Timeout
