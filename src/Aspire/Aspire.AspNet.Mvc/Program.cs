@@ -113,9 +113,14 @@ public class Program
 
         app.Use(async (context, next) =>
         {
+            // Only check for session cookie if the user is authenticated
             if (context.User.Identity?.IsAuthenticated == true)
             {
-                if (!context.Request.Cookies.ContainsKey("WebAppSession"))
+                // Only check for protected endpoints (not [AllowAnonymous])
+                var endpoint = context.GetEndpoint();
+                var allowAnonymous = endpoint?.Metadata.GetMetadata<IAllowAnonymous>() != null;
+
+                if (!allowAnonymous && !context.Request.Cookies.ContainsKey("WebAppSession"))
                 {
                     context.Response.Redirect("/MicrosoftIdentity/Account/SignOut");
                     return;
