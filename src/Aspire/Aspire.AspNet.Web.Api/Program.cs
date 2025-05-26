@@ -45,6 +45,32 @@ public class Program
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("APIAccessPolicy", policy =>
+                policy.RequireAssertion(context =>
+                {
+                    if (context.User?.Identity == null || !context.User.Identity.IsAuthenticated)
+                        return false;
+
+                    if (!context.User.Claims.Any())
+                        return false;
+
+                    // Check for the delegated permission scope ("access_as_user")
+                    var scopeClaim = context.User.FindFirst("scp")?.Value;
+                    bool hasScope = scopeClaim != null && scopeClaim.Split(' ').Contains("access_as_user");
+
+                    // Check for the app role ("API.Access") and app-only token
+                    var roleClaim = context.User.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value;
+                    var oid = context.User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value;
+                    var sub = context.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+                    bool isAppOnly = oid != null && sub != null && oid == sub;
+                    bool hasRole = roleClaim != null && roleClaim.Split(' ').Contains("API.Access") && isAppOnly;
+
+                    return hasScope || hasRole;
+                }));
+        });
+
         builder.Services.AddControllers();
         builder.Services.AddOpenApi();
         builder.Services.AddGrpc().AddJsonTranscoding();
