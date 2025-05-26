@@ -2,8 +2,6 @@ using Aspire.AspNet.Library.Models;
 using Aspire.AspNet.Library.Protos;
 using Aspire.AspNet.Mvc.Models;
 using Google.Protobuf;
-using Grpc.Core;
-using Grpc.Net.Client;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;

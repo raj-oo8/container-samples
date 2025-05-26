@@ -1,7 +1,6 @@
 using Aspire.AspNet.Library.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web.Resource;
 
 namespace Aspire.AspNet.Web.Api.Controllers;
 
