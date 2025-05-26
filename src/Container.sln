@@ -2,14 +2,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AspNet", "AspNet", "{0DAB0FC5-9597-4A8F-86A6-BE2DC2582CD9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNet.Mvc", "AspNet\AspNet.Mvc\AspNet.Mvc.csproj", "{B1962959-4E8E-46AF-AFB2-11FEC78F03BF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNet.Library", "AspNet\AspNet.Library\AspNet.Library.csproj", "{5C706032-A4D5-4516-840F-B72CEE45B119}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNet.Grpc.Api", "AspNet\AspNet.Grpc.Api\AspNet.Grpc.Api.csproj", "{B1DFF7D2-1F31-479B-B82A-0B5BC5876ECF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aspire.AspNet.Web.Api", "Aspire\Aspire.AspNet.Web.Api\Aspire.AspNet.Web.Api.csproj", "{8C3EF3AE-1E87-7F8A-B3AF-7121FA01E165}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aspire.AspNet.Mvc", "Aspire\Aspire.AspNet.Mvc\Aspire.AspNet.Mvc.csproj", "{872D4BE5-FAD5-5F68-F665-C5DE8D0739D3}"
@@ -26,18 +18,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B1962959-4E8E-46AF-AFB2-11FEC78F03BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B1962959-4E8E-46AF-AFB2-11FEC78F03BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B1962959-4E8E-46AF-AFB2-11FEC78F03BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B1962959-4E8E-46AF-AFB2-11FEC78F03BF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5C706032-A4D5-4516-840F-B72CEE45B119}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5C706032-A4D5-4516-840F-B72CEE45B119}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5C706032-A4D5-4516-840F-B72CEE45B119}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5C706032-A4D5-4516-840F-B72CEE45B119}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B1DFF7D2-1F31-479B-B82A-0B5BC5876ECF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B1DFF7D2-1F31-479B-B82A-0B5BC5876ECF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B1DFF7D2-1F31-479B-B82A-0B5BC5876ECF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B1DFF7D2-1F31-479B-B82A-0B5BC5876ECF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8C3EF3AE-1E87-7F8A-B3AF-7121FA01E165}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8C3EF3AE-1E87-7F8A-B3AF-7121FA01E165}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C3EF3AE-1E87-7F8A-B3AF-7121FA01E165}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -61,11 +41,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{B1962959-4E8E-46AF-AFB2-11FEC78F03BF} = {0DAB0FC5-9597-4A8F-86A6-BE2DC2582CD9}
-		{5C706032-A4D5-4516-840F-B72CEE45B119} = {0DAB0FC5-9597-4A8F-86A6-BE2DC2582CD9}
-		{B1DFF7D2-1F31-479B-B82A-0B5BC5876ECF} = {0DAB0FC5-9597-4A8F-86A6-BE2DC2582CD9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FC1F331B-D329-4F51-BCDD-775667D45635}
