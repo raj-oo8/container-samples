@@ -57,7 +57,7 @@ public class Program
                         return false;
 
                     // Check for the delegated permission scope ("access_as_user")
-                    var scopeClaim = context.User.FindFirst("scp")?.Value;
+                    var scopeClaim = context.User.FindFirst("http://schemas.microsoft.com/identity/claims/scope")?.Value;
                     bool hasScope = scopeClaim != null && scopeClaim.Split(' ').Contains("access_as_user");
 
                     // Check for the app role ("API.Access") and app-only token
