@@ -1,7 +1,7 @@
 using Aspire.AspNet.Library.Models;
 using Aspire.AspNet.Library.Protos;
 using Aspire.AspNet.Mvc.Models;
-using Google.Protobuf;
+using Grpc.Core;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
@@ -17,15 +17,29 @@ namespace Aspire.AspNet.Mvc.Controllers;
 public class HomeController : Controller
 {
     readonly EventId eventId = new(200, typeof(HomeController).FullName);
-    private readonly IDownstreamApi _downstreamApi;
-    private readonly ILogger<HomeController> _logger;
-    private readonly IConfiguration _configuration;
+    readonly IDownstreamApi _downstreamApi;
+    readonly ITokenAcquisition _tokenAcquisition;
+    readonly ILogger<HomeController> _logger;
+    readonly IConfiguration _configuration;
+    readonly WeatherRpcServiceV1.WeatherRpcServiceV1Client _weatherRpcServiceV1Client;
+    readonly WeatherRpcServiceV2.WeatherRpcServiceV2Client _weatherRpcServiceV2Client;
 
-    public HomeController(ILogger<HomeController> logger, IDownstreamApi downstreamApi, IConfiguration configuration)
+    public HomeController
+    (
+        ILogger<HomeController> logger, 
+        IDownstreamApi downstreamApi, 
+        IConfiguration configuration, 
+        WeatherRpcServiceV1.WeatherRpcServiceV1Client weatherRpcServiceV1Client,
+        WeatherRpcServiceV2.WeatherRpcServiceV2Client weatherRpcServiceV2Client,
+        ITokenAcquisition tokenAcquisition
+    )
     {
         _logger = logger;
         _downstreamApi = downstreamApi;
         _configuration = configuration;
+        _weatherRpcServiceV1Client = weatherRpcServiceV1Client;
+        _weatherRpcServiceV2Client = weatherRpcServiceV2Client;
+        _tokenAcquisition = tokenAcquisition;
     }
 
     [AllowAnonymous]
@@ -99,31 +113,19 @@ public class HomeController : Controller
     {
         var forecasts = new List<WeatherForecastV1>();
 
-        using var response = await _downstreamApi.CallApiForUserAsync
-        (
-            "DownstreamApi",
-            options =>
-            {
-                options.Scopes = [scope];
-                options.RelativePath = "v1/weatherforecast";
-            }
-        ).ConfigureAwait(false);
-
-        if (response.StatusCode == HttpStatusCode.OK)
+        var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(new[] { scope });
+        var headers = new Metadata
         {
-            var json = await response.Content.ReadAsStringAsync();
-            var parser = new JsonParser(JsonParser.Settings.Default.WithIgnoreUnknownFields(true));
-            var result = parser.Parse<WeatherForecastResponseV1>(json);
+            { "Authorization", $"Bearer {accessToken}" }
+        };
+        var response = await _weatherRpcServiceV1Client.GetWeatherForecastAsync(new WeatherForecastRequestV1(), headers);
 
-            if (result.Forecasts != null)
-            {
-                forecasts.AddRange(result.Forecasts);
-            }
-        }
-        else
+        if (response != null)
         {
-            var error = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            _logger.LogError(eventId, error, $"Error in {nameof(GetWeatherForecastV1Async)}: {response.StatusCode}");
+            if (response.Forecasts != null)
+            {
+                forecasts.AddRange(response.Forecasts);
+            }
         }
 
         return forecasts;
@@ -133,31 +135,19 @@ public class HomeController : Controller
     {
         var forecasts = new List<WeatherForecastV2>();
 
-        using var response = await _downstreamApi.CallApiForUserAsync
-        (
-            "DownstreamApi",
-            options =>
-            {
-                options.Scopes = [scope];
-                options.RelativePath = "v2/weatherforecast";
-            }
-        ).ConfigureAwait(false);
-
-        if (response.StatusCode == HttpStatusCode.OK)
+        var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(new[] { scope });
+        var headers = new Metadata
         {
-            var json = await response.Content.ReadAsStringAsync();
-            var parser = new JsonParser(JsonParser.Settings.Default.WithIgnoreUnknownFields(true));
-            var result = parser.Parse<WeatherForecastResponseV2>(json);
+            { "Authorization", $"Bearer {accessToken}" }
+        };
+        var response = await _weatherRpcServiceV2Client.GetWeatherForecastAsync(new WeatherForecastRequestV2(), headers);
 
-            if (result.Forecasts != null)
-            {
-                forecasts.AddRange(result.Forecasts);
-            }
-        }
-        else
+        if (response != null)
         {
-            var error = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            _logger.LogError(eventId, error, $"Error in {nameof(GetWeatherForecastV2Async)}: {response.StatusCode}");
+            if (response.Forecasts != null)
+            {
+                forecasts.AddRange(response.Forecasts);
+            }
         }
 
         return forecasts;

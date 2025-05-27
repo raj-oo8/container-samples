@@ -1,12 +1,10 @@
 using Aspire.AspNet.Library.Protos;
 using Grpc.Core;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Identity.Web.Resource;
 
 namespace Aspire.AspNet.Web.Api.Services
 {
-    [Authorize]
-    [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
+    [Authorize(Policy = "APIAccessPolicy")]
     public class WeatherServiceV2 : WeatherRpcServiceV2.WeatherRpcServiceV2Base
     {
         readonly EventId eventId = new(200, typeof(WeatherServiceV2).FullName);
