@@ -22,7 +22,7 @@ namespace Aspire.AspNet.Web.Api.Controllers
         [HttpGet("ready")]
         public async Task<IActionResult> GetReadinessStatus()
         {
-            _logger.LogInformation(eventId, $"Starting {nameof(GetReadinessStatus)}...");
+            _logger.LogInformation(eventId, $"Starting: {nameof(GetReadinessStatus)}...");
 
             var host = HttpContext.Request.Host.Host;
 
@@ -32,47 +32,46 @@ namespace Aspire.AspNet.Web.Api.Controllers
                 var reply = await ping.SendPingAsync(host);
                 if (reply.Status == IPStatus.Success)
                 {
+                    _logger.LogInformation(eventId, $"Status: {reply.Status}...");
                     return Ok("Readiness check passed.");
                 }
                 else
                 {
+                    _logger.LogInformation(eventId, $"Status: {reply.Status}...");
                     return StatusCode(503, "Readiness check failed.");
                 }
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError(eventId, $"Error: {ex.Message}...");
                 return StatusCode(503, "Readiness check failed.");
             }
         }
 
         [HttpGet("live")]
-        public async Task<IActionResult> GetLivenessStatus()
+        public IActionResult GetLivenessStatus()
         {
             _logger.LogInformation(eventId, $"Starting {nameof(GetLivenessStatus)}...");
 
-            var request = HttpContext.Request;
-            var host = $"{request.Scheme}://{request.Host.Value}";
-
-            if (string.IsNullOrWhiteSpace(host))
-            {
-                return StatusCode(503, "Liveness check failed.");
-            }
-
             try
             {
-                var client = new WeatherRpcServiceV1.WeatherRpcServiceV1Client(GrpcChannel.ForAddress(host));
-                var weatherForecastResponse = await client.GetWeatherForecastAsync(new WeatherForecastRequestV1());
-                if (weatherForecastResponse.Forecasts.Count() > 0)
+                var client = new WeatherForecastController();
+                var weatherForecastResponse = client.Get();
+                var count = weatherForecastResponse.Count();
+                if (count > 0)
                 {
+                    _logger.LogInformation(eventId, $"Weather forecast count: {count}...");
                     return Ok("Liveness check passed.");
                 }
                 else
                 {
+                    _logger.LogInformation(eventId, $"Weather forecast count: {count}...");
                     return StatusCode(503, "Liveness check failed.");
                 }
             }
-            catch
+            catch( Exception ex )
             {
+                _logger.LogError(eventId, $"Error: {ex.Message}...");
                 return StatusCode(503, "Liveness check failed.");
             }
         }
