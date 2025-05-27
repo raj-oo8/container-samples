@@ -12,7 +12,6 @@ This repository contains sample projects covering various topics to demonstrate 
 - JWT (JSON Web Token) Bearer Authentication
 - OpenID Connect (OIDC)
 - Authorization Code Flow
-- Client Credentials Flow
 - Authorization Code with PKCE Flow
 - Client Credentials Flow
 - Access Token
