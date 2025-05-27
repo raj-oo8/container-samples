@@ -1,7 +1,6 @@
 using Aspire.AspNet.Library.Protos;
 using Grpc.Core;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Identity.Web.Resource;
 
 namespace Aspire.AspNet.Web.Api.Services
 {
