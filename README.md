@@ -13,6 +13,11 @@ This repository contains sample projects covering various topics to demonstrate 
 - OpenID Connect (OIDC)
 - Authorization Code Flow
 - Client Credentials Flow
+- Authorization Code with PKCE Flow
+- Client Credentials Flow
+- Access Token
+- Refresh Token
+- Authorization Code
 - A/B Testing
 - Canary
 - Blue-Green
@@ -35,6 +40,3 @@ This repository contains sample projects covering various topics to demonstrate 
 
 - GitHub Actions
 - Azure Developer CLI (azd)
-
-
-
