@@ -1,5 +1,3 @@
-using Aspire.AspNet.Library.Protos;
-using Grpc.Net.Client;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.NetworkInformation;
 
@@ -32,18 +30,18 @@ namespace Aspire.AspNet.Web.Api.Controllers
                 var reply = await ping.SendPingAsync(host);
                 if (reply.Status == IPStatus.Success)
                 {
-                    _logger.LogInformation(eventId, $"Status: {reply.Status}...");
+                    _logger.LogInformation(eventId, $"Status: {reply.Status}");
                     return Ok("Readiness check passed.");
                 }
                 else
                 {
-                    _logger.LogInformation(eventId, $"Status: {reply.Status}...");
+                    _logger.LogInformation(eventId, $"Status: {reply.Status}");
                     return StatusCode(503, "Readiness check failed.");
                 }
             }
             catch(Exception ex)
             {
-                _logger.LogError(eventId, $"Error: {ex.Message}...");
+                _logger.LogError(eventId, $"Error: {ex.Message}");
                 return StatusCode(503, "Readiness check failed.");
             }
         }
@@ -60,18 +58,18 @@ namespace Aspire.AspNet.Web.Api.Controllers
                 var count = weatherForecastResponse.Count();
                 if (count > 0)
                 {
-                    _logger.LogInformation(eventId, $"Weather forecast count: {count}...");
+                    _logger.LogInformation(eventId, $"Weather forecast count: {count}");
                     return Ok("Liveness check passed.");
                 }
                 else
                 {
-                    _logger.LogInformation(eventId, $"Weather forecast count: {count}...");
+                    _logger.LogInformation(eventId, $"Weather forecast count: {count}");
                     return StatusCode(503, "Liveness check failed.");
                 }
             }
             catch( Exception ex )
             {
-                _logger.LogError(eventId, $"Error: {ex.Message}...");
+                _logger.LogError(eventId, $"Error: {ex.Message}");
                 return StatusCode(503, "Liveness check failed.");
             }
         }
@@ -81,14 +79,31 @@ namespace Aspire.AspNet.Web.Api.Controllers
         {
             _logger.LogInformation(eventId, $"Starting {nameof(GetStartupStatus)}...");
 
-            var accountEndpoint = _configuration["CosmosDb:Endpoint"];
-            var tenantId = _configuration["AzureAd:TenantId"];
-
-            if (string.IsNullOrWhiteSpace(accountEndpoint) || string.IsNullOrWhiteSpace(tenantId))
+            var domainConfig = "AzureAd:Domain";
+            var domainValue = _configuration[domainConfig];
+            if (string.IsNullOrWhiteSpace(domainValue))
             {
+                _logger.LogInformation(eventId, $"Missing value: {domainConfig}");
                 return StatusCode(503, "Startup check failed.");
             }
 
+            var tenantConfig = "AzureAd:TenantId";
+            var tenantValue = _configuration[tenantConfig];
+            if (string.IsNullOrWhiteSpace(tenantValue))
+            {
+                _logger.LogInformation(eventId, $"Missing value: {tenantConfig}");
+                return StatusCode(503, "Startup check failed.");
+            }
+
+            var clientConfig = "AzureAd:ClientId";
+            var clientValue = _configuration[clientConfig];
+            if (string.IsNullOrWhiteSpace(clientValue))
+            {
+                _logger.LogInformation(eventId, $"Missing value: {clientConfig}");
+                return StatusCode(503, "Startup check failed.");
+            }
+
+            _logger.LogInformation(eventId, $"No missing config values");
             return Ok("Startup check passed.");
         }
     }
