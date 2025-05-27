@@ -44,14 +44,14 @@ public class Program
 
         builder.AddServiceDefaults();
 
-        builder.Services.AddGrpcClient<WeatherRpcServiceV1.WeatherRpcServiceV1Client>(o =>
-        {
-            o.Address = new Uri(builder.Configuration.GetSection("DownstreamApi:BaseUrl").Value);
-        });
-        builder.Services.AddGrpcClient<WeatherRpcServiceV2.WeatherRpcServiceV2Client>(o =>
-        {
-            o.Address = new Uri(builder.Configuration.GetSection("DownstreamApi:BaseUrl").Value);
-        });
+        //builder.Services.AddGrpcClient<WeatherRpcServiceV1.WeatherRpcServiceV1Client>(o =>
+        //{
+        //    o.Address = new Uri(builder.Configuration.GetSection("DownstreamApi:BaseUrl").Value);
+        //});
+        //builder.Services.AddGrpcClient<WeatherRpcServiceV2.WeatherRpcServiceV2Client>(o =>
+        //{
+        //    o.Address = new Uri(builder.Configuration.GetSection("DownstreamApi:BaseUrl").Value);
+        //});
 
         builder.Services.AddControllersWithViews(options =>
         {

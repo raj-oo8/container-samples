@@ -112,21 +112,21 @@ jobs:
               AzureAd__TenantId=${{ secrets.AZUREAD_TENANT_ID }} \
               AzureAd__ClientId=${{ secrets.AZUREAD_APIAPP_ID }}
 
-      # Ensure webfrontend ingress is configured for HTTP/2
-      - name: Ensure webfrontend ingress is HTTP/2
-        run: |
-          az containerapp ingress update \
-            --name ${{ env.ACA_WEBAPP_NAME }} \
-            --resource-group ${{ env.ACA_RESOURCE_GROUP }} \
-            --transport http2
+      # # Ensure webfrontend ingress is configured for HTTP/2
+      # - name: Ensure webfrontend ingress is HTTP/2
+      #   run: |
+      #     az containerapp ingress update \
+      #       --name ${{ env.ACA_WEBAPP_NAME }} \
+      #       --resource-group ${{ env.ACA_RESOURCE_GROUP }} \
+      #       --transport http2
 
-      # Ensure apiservice ingress is configured for HTTP/2
-      - name: Ensure apiservice ingress is HTTP/2
-        run: |
-          az containerapp ingress update \
-            --name ${{ env.ACA_APIAPP_NAME }} \
-            --resource-group ${{ env.ACA_RESOURCE_GROUP }} \
-            --transport http2
+      # # Ensure apiservice ingress is configured for HTTP/2
+      # - name: Ensure apiservice ingress is HTTP/2
+      #   run: |
+      #     az containerapp ingress update \
+      #       --name ${{ env.ACA_APIAPP_NAME }} \
+      #       --resource-group ${{ env.ACA_RESOURCE_GROUP }} \
+      #       --transport http2
 
       # Get the FQDN (URL) of the deployed webfrontend app
       - name: Get webfrontend App URL
