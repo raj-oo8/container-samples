@@ -1,4 +1,4 @@
-using Aspire.AspNet.Library.Protos;
+//using Aspire.AspNet.Library.Protos;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
