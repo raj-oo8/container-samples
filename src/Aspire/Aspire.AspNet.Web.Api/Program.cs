@@ -56,16 +56,16 @@ public class Program
                     if (!context.User.Claims.Any())
                         return false;
 
-                    // Check for the delegated permission scope ("access_as_user")
+                    // Check for the delegated permission scope
                     var scopeClaim = context.User.FindFirst("http://schemas.microsoft.com/identity/claims/scope")?.Value;
-                    bool hasScope = scopeClaim != null && scopeClaim.Split(' ').Contains("access_as_user");
+                    bool hasScope = scopeClaim != null && scopeClaim.Split(' ').Contains(builder.Configuration.GetSection("AzureAd:Scopes").Value);
 
-                    // Check for the app role ("API.Access") and app-only token
+                    // Check for the app role and app-only token
                     var roleClaim = context.User.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value;
                     var oid = context.User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value;
                     var sub = context.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
                     bool isAppOnly = oid != null && sub != null && oid == sub;
-                    bool hasRole = roleClaim != null && roleClaim.Split(' ').Contains("API.Access") && isAppOnly;
+                    bool hasRole = roleClaim != null && roleClaim.Split(' ').Contains(builder.Configuration.GetSection("AzureAd:Roles").Value) && isAppOnly;
 
                     return hasScope || hasRole;
                 }));
